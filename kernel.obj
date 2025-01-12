@@ -1,0 +1,33 @@
+
+kernel.elf:	file format elf32-littleriscv
+
+Disassembly of section .text:
+
+80200000 <boot>:
+80200000: 37 05 22 80  	lui	a0, 0x80220
+80200004: 13 05 c5 04  	addi	a0, a0, 0x4c
+80200008: 2a 81        	mv	sp, a0
+8020000a: 6f 00 a0 01  	j	0x80200024 <kernel_main>
+
+8020000e <memset>:
+8020000e: 11 ca        	beqz	a2, 0x80200022 <memset+0x14>
+80200010: 2a 96        	add	a2, a2, a0
+80200012: aa 86        	mv	a3, a0
+80200014: 13 87 16 00  	addi	a4, a3, 0x1
+80200018: 23 80 b6 00  	sb	a1, 0x0(a3)
+8020001c: ba 86        	mv	a3, a4
+8020001e: e3 1b c7 fe  	bne	a4, a2, 0x80200014 <memset+0x6>
+80200022: 82 80        	ret
+
+80200024 <kernel_main>:
+80200024: 37 05 20 80  	lui	a0, 0x80200
+80200028: 13 05 c5 04  	addi	a0, a0, 0x4c
+8020002c: b7 05 20 80  	lui	a1, 0x80200
+80200030: 93 85 c5 04  	addi	a1, a1, 0x4c
+80200034: 33 86 a5 40  	sub	a2, a1, a0
+80200038: 01 ca        	beqz	a2, 0x80200048 <kernel_main+0x24>
+8020003a: 13 06 15 00  	addi	a2, a0, 0x1
+8020003e: 23 00 05 00  	sb	zero, 0x0(a0)
+80200042: 32 85        	mv	a0, a2
+80200044: e3 1b b6 fe  	bne	a2, a1, 0x8020003a <kernel_main+0x16>
+80200048: 01 a0        	j	0x80200048 <kernel_main+0x24>
