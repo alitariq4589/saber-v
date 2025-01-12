@@ -4,7 +4,7 @@ set -xue
 QEMU=qemu-system-riscv32
 
 # new: Path to clang and compiler flags
-CC=/opt/homebrew/opt/llvm/bin/clang  # Ubuntu users: use CC=clang
+CC=/usr/bin/clang  # Ubuntu users: use CC=clang
 CFLAGS="-std=c11 -O2 -g3 -Wall -Wextra --target=riscv32 -ffreestanding -nostdlib"
 
 # new: Build the kernel
