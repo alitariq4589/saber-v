@@ -11,6 +11,8 @@ CFLAGS="-std=c11 -O2 -g3 -Wall -Wextra --target=riscv32 -ffreestanding -nostdlib
 $CC $CFLAGS -Wl,-Tkernel.ld -Wl,-Map=kernel.map -o kernel.elf \
     kernel.c
 
+llvm-objdump -d kernel.elf > kernel.obj
+
 # Start QEMU
 $QEMU -machine virt -bios opensbi-riscv32-generic-fw_dynamic.bin -nographic -serial mon:stdio --no-reboot \
     -kernel kernel.elf # new: Load the kernel
