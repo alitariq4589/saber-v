@@ -1,5 +1,5 @@
 #include "kernel.h"
-
+void initialize_stvec();
 extern char __bss[], __bss_end[], __stack_top[];
 
 struct sbiret sbi_call(long arg0, long arg1, long arg2, long arg3, long arg4,
@@ -34,7 +34,6 @@ void printf(char *fmt, ...)
     va_start(args, fmt);
 
     char *str;
-    char *start_str;
 
     int number_to_print;
 
@@ -61,8 +60,8 @@ void printf(char *fmt, ...)
             if (*fmt == 'd')
             {
                 // fmt++;
-                int number = va_arg(args, int);
-                int rev_number = 0;
+                unsigned long int number = va_arg(args, int);
+                unsigned long int rev_number = 0;
                 while (number > 9)
                 {
                     rev_number = (rev_number * 10) + (number % 10);
@@ -88,12 +87,35 @@ void printf(char *fmt, ...)
     }
 }
 
+void print_title(void){
+  printf("███████╗ █████╗ ██████╗ ███████╗██████╗               ██╗   ██╗\n");
+  printf("██╔════╝██╔══██╗██╔══██╗██╔════╝██╔══██╗              ██║   ██║\n");
+  printf("███████╗███████║██████╔╝█████╗  ██████╔╝    █████╗    ██║   ██║\n");
+  printf("╚════██║██╔══██║██╔══██╗██╔══╝  ██╔══██╗    ╚════╝    ╚██╗ ██╔╝\n");
+  printf("███████║██║  ██║██████╔╝███████╗██║  ██║               ╚████╔╝ \n");
+  printf("╚══════╝╚═╝  ╚═╝╚═════╝ ╚══════╝╚═╝  ╚═╝                ╚═══╝  \n");
+}
+
 void kernel_main(void)
 {
-    const char *s = "\n\nHello World!\n";
-    int number = 2;
-    printf("%d ABCDE %d FGHI %d", 1234, 5678, 9101112);
+    printf("\n\n\n");
+    print_title();
+    printf("                WELCOME TO SABER-V!              \n");
+    printf("\n");
+    printf("           Vendor Agnostic RISC-V OS          \n");
+    printf("\n");
 
+    WRITE_REGISTER(a3,15);
+    unsigned long int reg_read = READ_REGISTER(a3);
+    initialize_stvec();
+    int csr_value = READ_CSR(stvec);
+
+    printf("\nThe value of the register is: %d\n",csr_value);
+
+
+    PANIC("Dont Worry, you can ignore this panic. The kernel has booted successfully! This is the end of code");
+    
+    
 
     for (;;)
     {
@@ -112,4 +134,18 @@ boot(void)
         :
         : [stack_top] "r"(__stack_top) // Pass the stack top address as %[stack_top]
     );
+}
+
+
+
+void initialize_stvec(){
+    WRITE_CSR(stvec,(unsigned int) kernel_entry);
+}
+
+void handle_trap() {
+    unsigned int  scause = READ_CSR(scause);
+    unsigned int stval = READ_CSR(stval);
+    unsigned int user_pc = READ_CSR(sepc);
+
+    PANIC("unexpected trap scause=%x, stval=%x, sepc=%x\n", scause, stval, user_pc);
 }
