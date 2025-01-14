@@ -60,8 +60,8 @@ void printf(char *fmt, ...)
             if (*fmt == 'd')
             {
                 // fmt++;
-                unsigned long int number = va_arg(args, int);
-                unsigned long int rev_number = 0;
+                unsigned long number = va_arg(args, int);
+                unsigned long rev_number = 0;
                 while (number > 9)
                 {
                     rev_number = (rev_number * 10) + (number % 10);
@@ -77,6 +77,16 @@ void printf(char *fmt, ...)
                 }
                 putchar('0' + rev_number);
             }
+
+            // Hexadecimal print
+            if (*fmt == 'x')
+            {
+                unsigned int number = va_arg(args, int);
+                for (int i=7; i>=0; i--){
+                    int hex_digit = (number >> (i*4)) % 15;
+                    putchar("0123456789abcdefgh"[hex_digit]);
+                }
+            }
         }
         else
         {
@@ -87,13 +97,14 @@ void printf(char *fmt, ...)
     }
 }
 
-void print_title(void){
-  printf("███████╗ █████╗ ██████╗ ███████╗██████╗               ██╗   ██╗\n");
-  printf("██╔════╝██╔══██╗██╔══██╗██╔════╝██╔══██╗              ██║   ██║\n");
-  printf("███████╗███████║██████╔╝█████╗  ██████╔╝    █████╗    ██║   ██║\n");
-  printf("╚════██║██╔══██║██╔══██╗██╔══╝  ██╔══██╗    ╚════╝    ╚██╗ ██╔╝\n");
-  printf("███████║██║  ██║██████╔╝███████╗██║  ██║               ╚████╔╝ \n");
-  printf("╚══════╝╚═╝  ╚═╝╚═════╝ ╚══════╝╚═╝  ╚═╝                ╚═══╝  \n");
+void print_title(void)
+{
+    printf("███████╗ █████╗ ██████╗ ███████╗██████╗               ██╗   ██╗\n");
+    printf("██╔════╝██╔══██╗██╔══██╗██╔════╝██╔══██╗              ██║   ██║\n");
+    printf("███████╗███████║██████╔╝█████╗  ██████╔╝    █████╗    ██║   ██║\n");
+    printf("╚════██║██╔══██║██╔══██╗██╔══╝  ██╔══██╗    ╚════╝    ╚██╗ ██╔╝\n");
+    printf("███████║██║  ██║██████╔╝███████╗██║  ██║               ╚████╔╝ \n");
+    printf("╚══════╝╚═╝  ╚═╝╚═════╝ ╚══════╝╚═╝  ╚═╝                ╚═══╝  \n");
 }
 
 void kernel_main(void)
@@ -102,20 +113,19 @@ void kernel_main(void)
     print_title();
     printf("                WELCOME TO SABER-V!              \n");
     printf("\n");
-    printf("           Vendor Agnostic RISC-V OS          \n");
-    printf("\n");
+    printf("         Vendor Agnostic Open-source RISC-V OS          \n");
+    printf("\n\n");
 
-    WRITE_REGISTER(a3,15);
-    unsigned long int reg_read = READ_REGISTER(a3);
+    printf("\nInitializing stvec trap handler...\n");
     initialize_stvec();
+
+    int hex_num = 9;
+
     int csr_value = READ_CSR(stvec);
 
-    printf("\nThe value of the register is: %d\n",csr_value);
-
-
-    PANIC("Dont Worry, you can ignore this panic. The kernel has booted successfully! This is the end of code");
-    
-    
+    // printf("\nThe value of the register is: %d\n", csr_value);
+    printf ("The value in hex = %x",hex_num);
+    PANIC("Code Completed!!!");
 
     for (;;)
     {
@@ -136,14 +146,14 @@ boot(void)
     );
 }
 
-
-
-void initialize_stvec(){
-    WRITE_CSR(stvec,(unsigned int) kernel_entry);
+void initialize_stvec()
+{
+    WRITE_CSR(stvec, (unsigned int)kernel_entry);
 }
 
-void handle_trap() {
-    unsigned int  scause = READ_CSR(scause);
+void handle_trap()
+{
+    unsigned int scause = READ_CSR(scause);
     unsigned int stval = READ_CSR(stval);
     unsigned int user_pc = READ_CSR(sepc);
 
