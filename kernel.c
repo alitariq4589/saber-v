@@ -3,7 +3,8 @@
 extern char __bss[], __bss_end[], __stack_top[];
 
 struct sbiret sbi_call(long arg0, long arg1, long arg2, long arg3, long arg4,
-                       long arg5, long fid, long eid) {
+                       long arg5, long fid, long eid)
+{
     register int a0 __asm__("a0") = arg0;
     register int a1 __asm__("a1") = arg1;
     register int a2 __asm__("a2") = arg2;
@@ -21,29 +22,94 @@ struct sbiret sbi_call(long arg0, long arg1, long arg2, long arg3, long arg4,
     return (struct sbiret){.error = a0, .value = a1};
 }
 
-void putchar(char ch) {
+void putchar(char ch)
+{
     sbi_call(ch, 0, 0, 0, 0, 0, 0, 1 /* Console Putchar */);
 }
 
-void kernel_main(void) {
-    const char *s = "\n\nHello World!\n";
-    for (int i = 0; s[i] != '\0'; i++) {
-        putchar(s[i]);
-    }
+void printf(char *fmt, ...)
+{
 
-    for (;;) {
+    va_list args;
+    va_start(args, fmt);
+
+    char *str;
+    char *start_str;
+
+    int number_to_print;
+
+    while (*fmt)
+    {
+        if (*fmt == '%')
+        {
+
+            fmt++;
+
+            // The string print
+            if (*fmt == 's')
+            {
+                fmt++;
+                str = va_arg(args, char *);
+                while (*str)
+                {
+                    putchar(*str);
+                    str++;
+                }
+            }
+
+            // The integer print
+            if (*fmt == 'd')
+            {
+                // fmt++;
+                int number = va_arg(args, int);
+                int rev_number = 0;
+                while (number > 9)
+                {
+                    rev_number = (rev_number * 10) + (number % 10);
+                    number /= 10;
+                }
+
+                rev_number = (rev_number * 10) + number;
+                while (rev_number > 9)
+                {
+                    number_to_print = rev_number % 10;
+                    putchar('0' + number_to_print);
+                    rev_number /= 10;
+                }
+                putchar('0' + rev_number);
+            }
+        }
+        else
+        {
+
+            putchar(*fmt);
+        }
+        fmt++;
+    }
+}
+
+void kernel_main(void)
+{
+    const char *s = "\n\nHello World!\n";
+    int number = 2;
+    printf("%d ABCDE %d FGHI %d", 1234, 5678, 9101112);
+
+
+    for (;;)
+    {
         __asm__ __volatile__("wfi");
     }
 }
 
 // Boot code. Has to remain here because it is used in the linker file
 __attribute__((section(".text.boot")))
-__attribute__((naked))
-void boot(void) {
+__attribute__((naked)) void
+boot(void)
+{
     __asm__ __volatile__(
         "mv sp, %[stack_top]\n" // Set the stack pointer
         "j kernel_main\n"       // Jump to the kernel main function
         :
-        : [stack_top] "r" (__stack_top) // Pass the stack top address as %[stack_top]
+        : [stack_top] "r"(__stack_top) // Pass the stack top address as %[stack_top]
     );
 }
