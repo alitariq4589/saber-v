@@ -6,7 +6,7 @@ void kernel_main(void)
 {
 
     print_title();
-    printf("\nInitializing stvec trap handler...\n");
+    printf("\nInitializing stvec with trap handler...\n");
     initialize_stvec();
 
 

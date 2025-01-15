@@ -100,7 +100,7 @@ Boot HART MEDELEG         : 0x00f0b509
 
 
 
-Initializing stvec trap handler...
+Initializing stvec with trap handler...
 
 Kernel Panic! : kernel.c : 16: Code Completed!!!
 ```
