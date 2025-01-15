@@ -5,26 +5,26 @@
 #define va_start __builtin_va_start
 #define va_end __builtin_va_end
 
-
-#define PANIC(fmt, ...)                                                        \
-    do {                                                                       \
-        printf("\nKernel Panic! : %s : %d: " fmt "\n", __FILE__, __LINE__, ##__VA_ARGS__);  \
-        while (1) {}                                                           \
+#define PANIC(fmt, ...)                                                                    \
+    do                                                                                     \
+    {                                                                                      \
+        printf("\nKernel Panic! : %s : %d: " fmt "\n", __FILE__, __LINE__, ##__VA_ARGS__); \
+        while (1)                                                                          \
+        {                                                                                  \
+        }                                                                                  \
     } while (0)
 
+#define READ_CSR(csr) ({ unsigned long csr_value; __asm__ __volatile__ ("csrr %0," #csr : "=r"(csr_value) ); csr_value; })
+#define WRITE_CSR(reg, value) ({ unsigned long csr_value = value; __asm__ __volatile__ ("csrw " #reg ", %[reg_value]"::[reg_value] "r" (csr_value) ); })
 
+#define READ_REGISTER(reg) ({ unsigned int reg_val; __asm__ __volatile__ ("add %0," #reg ",x0" : "=r"(reg_val) ); reg_val; })
+#define WRITE_REGISTER(reg, value) ({ __asm__ __volatile__("li " #reg "," #value); })
 
-#define READ_CSR(csr)({ unsigned long csr_value; __asm__ __volatile__ ("csrr %0," #csr : "=r"(csr_value) ); csr_value; })
-#define WRITE_CSR(reg,value)({ unsigned long csr_value = value; __asm__ __volatile__ ("csrw " #reg ", %[reg_value]"::[reg_value] "r" (csr_value) );  })
-
-#define READ_REGISTER(reg)({ unsigned int reg_val; __asm__ __volatile__ ("add %0," #reg ",x0" : "=r"(reg_val) ); reg_val; })
-#define WRITE_REGISTER(reg,value)({ __asm__ __volatile__ ("li " #reg "," #value);  })
-
-
-extern char __bss[], __bss_end[], __stack_top[],__free_ram[], __free_ram_end[];
+extern char __bss[], __bss_end[], __stack_top[], __free_mem[], __free_mem_end[];
 
 // This is unused yet
-struct trap_frame {
+struct trap_frame
+{
     unsigned int ra;
     unsigned int gp;
     unsigned int tp;
@@ -58,9 +58,8 @@ struct trap_frame {
     unsigned int sp;
 } __attribute__((packed));
 
-
-
-struct sbiret {
+struct sbiret
+{
     long error;
     long value;
 };

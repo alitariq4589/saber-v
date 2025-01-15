@@ -4,29 +4,22 @@
 /*Main function for the kernel which is called by boot function*/
 void kernel_main(void)
 {
-    printf("\n\n\n");
-    print_title();
-    printf("                WELCOME TO SABER-V!              \n");
-    printf("\n");
-    printf("         Vendor Agnostic Open-source RISC-V OS          \n");
-    printf("\n\n");
 
+    print_title();
     printf("\nInitializing stvec trap handler...\n");
     initialize_stvec();
 
- 
-    printf("The address of the kernel entry is: %d\n", (unsigned long) kernel_entry);
-    printf("The address of the kernel main is: %d\n", (unsigned long) kernel_main);
+    unsigned long *start_addr;
+    start_addr = (unsigned long *) __free_mem;
 
-    int hex_num = 9;
+    memset(start_addr, 1, 40);
 
-    int csr_value = READ_CSR(stvec);
-     csr_value = READ_CSR(stvec);
-     csr_value = READ_CSR(sepc);
-    printf ("The value of sepc before exception: %d\n", csr_value);
-    __asm__ __volatile__ ("unimp");
+    for (int i=0;i<40; i++){
+        printf("%d\n", *start_addr);
+        start_addr++;
+    }
 
-    printf ("The value in hex = %x",hex_num);
+
     PANIC("Code Completed!!!");
 
     for (;;)
