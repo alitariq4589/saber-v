@@ -150,9 +150,9 @@ void print_title(void)
   printf("╚══════╝╚═╝  ╚═╝╚═════╝ ╚══════╝╚═╝  ╚═╝                ╚═══╝  \n");
   printf("\n\n\n");
 
-  printf("                WELCOME TO SABER-V!              \n");
+  printf("                    WELCOME TO SABER-V!              \n");
   printf("\n");
-  printf("         Vendor Agnostic Open-source RISC-V OS          \n");
+  printf("         A very lightweight Open-source RISC-V OS          \n");
   printf("\n\n");
 }
 
@@ -169,7 +169,7 @@ void handle_trap()
   unsigned long stval = READ_CSR(stval);
   unsigned long user_pc = READ_CSR(sepc);
 
-  unsigned long exception_type_index = (scause & 0x1f) + (((0x80000000 & scause) && (0x80000000)) * 20);
+  unsigned long exception_type_index = (scause & 0x1f) + ((0x80000000 & scause) * 20);
 
   printf("The index is: %d\n", exception_type_index);
 

@@ -9,16 +9,9 @@ void kernel_main(void)
     printf("\nInitializing stvec trap handler...\n");
     initialize_stvec();
 
-    unsigned char *start_addr;
-    start_addr = (unsigned char *)__free_mem;
 
-    memset(start_addr, 2, 40);
 
-    for (int i = 0; i < 41; i++)
-    {
-        printf("%d\n", *start_addr);
-        start_addr++;
-    }
+
 
     PANIC("Code Completed!!!");
 

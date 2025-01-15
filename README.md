@@ -12,6 +12,17 @@ Following are the details of each file.
 
 Other compiled files are not necessary since they can be reproduced again by running `run.sh`
 
-This kernel is implemented for the following machine.
+This OS is implemented for the following machine.
 
 - `qemu-system-riscv32`
+
+## Pre-requisites
+
+This source code is tested on 
+
+- `qemu-system-riscv32` version 8.2.0 
+- `clang` version 18.1.8
+
+## Running the OS
+
+For running the OS, you can simply execute `run.sh`
