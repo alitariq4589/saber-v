@@ -1,6 +1,7 @@
 #include "kernel.h"
 #include "functions.h"
 
+/*Main function for the kernel which is called by boot function*/
 void kernel_main(void)
 {
     printf("\n\n\n");
