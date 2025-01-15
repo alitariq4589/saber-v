@@ -9,16 +9,16 @@ void kernel_main(void)
     printf("\nInitializing stvec trap handler...\n");
     initialize_stvec();
 
-    unsigned long *start_addr;
-    start_addr = (unsigned long *) __free_mem;
+    unsigned char *start_addr;
+    start_addr = (unsigned char *)__free_mem;
 
-    memset(start_addr, 1, 40);
+    memset(start_addr, 2, 40);
 
-    for (int i=0;i<40; i++){
+    for (int i = 0; i < 41; i++)
+    {
         printf("%d\n", *start_addr);
         start_addr++;
     }
-
 
     PANIC("Code Completed!!!");
 
@@ -40,6 +40,3 @@ boot(void)
         : [stack_top] "r"(__stack_top) // Pass the stack top address as %[stack_top]
     );
 }
-
-
-

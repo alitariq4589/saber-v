@@ -1,8 +1,6 @@
 #include "kernel.h"
 #include "functions.h"
 
-
-
 const char *exception_cause[] = {
     "Instruction address misaligned",
     "Instruction access fault",
@@ -38,8 +36,7 @@ const char *exception_cause[] = {
     "Reserved",
     "Reserved",
     "Reserved",
-    "Counter-overflow interrupt"
-};
+    "Counter-overflow interrupt"};
 
 /*SBI function calls*/
 struct sbiret sbi_call(long arg0, long arg1, long arg2, long arg3, long arg4,
@@ -171,11 +168,11 @@ void handle_trap()
   unsigned long scause = READ_CSR(scause);
   unsigned long stval = READ_CSR(stval);
   unsigned long user_pc = READ_CSR(sepc);
-  
-  unsigned long exception_type_index =  (scause & 0x1f) + (((0x80000000 & scause) && (0x80000000))*20);
+
+  unsigned long exception_type_index = (scause & 0x1f) + (((0x80000000 & scause) && (0x80000000)) * 20);
 
   printf("The index is: %d\n", exception_type_index);
-  
+
   printf("\n\n      === Exception Encountered ===    \n\n");
   printf("\nException Type: %s !\n", exception_cause[exception_type_index]);
   PANIC("Unexpected trap scause=%x, stval=%x, sepc=%x\n", scause, stval, user_pc);
@@ -271,7 +268,7 @@ void memset(unsigned long *start_addr, unsigned char set_value, unsigned long nu
 {
   unsigned char *slider = (unsigned char *)start_addr;
 
-  for (unsigned char i = 0; i < (unsigned long)(start_addr) * (number_of_bytes_to_set); i++)
+  for (unsigned char i = 0; i < number_of_bytes_to_set; i++)
   {
     *slider = set_value;
     slider++;
