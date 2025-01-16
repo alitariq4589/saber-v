@@ -10,7 +10,8 @@ void kernel_main(void)
     initialize_stvec();
 
     unsigned char *get_nine_bytes = malloc(9);
-    printf("%d\n", *get_nine_bytes - 1 );
+    printf("The address of the allocated memory is: %x\n", get_nine_bytes);
+
     for (int i = 0; i < 10; i++)
     {
         printf("%d\n", *get_nine_bytes);
