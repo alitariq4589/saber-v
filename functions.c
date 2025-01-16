@@ -257,16 +257,24 @@ kernel_entry(void)
       "sret\n");
 }
 
-/*Allocates the number of bytes of memory and returns the starting address of the alloacted memory. The memory which is used for this is defined in the linker script as __free_mem*/
-// unsigned long malloc(unsigned long number_of_bytes)
-// {
-//   unsigned long starting_address = __free_ram;
-// }
+/*Allocates the number of bytes of memory and returns the starting address of the alloacted memory. The memory which is used for this is defined in the linker script as __free_mem and is 64MB. The function sets 0s in all the addresses in the memory*/
+unsigned char *malloc(unsigned long number_of_bytes)
+{
+  unsigned char *next_address = __free_mem;
+  unsigned char *starting_address = next_address;
+
+  next_address += number_of_bytes;
+
+  for (int i=0; i<number_of_bytes-1; i++){
+    memset(starting_address, 0, number_of_bytes);
+  }
+  return starting_address;
+}
 
 /*Sets number of bytes from a starting address with the given value*/
-void memset(unsigned long *start_addr, unsigned char set_value, unsigned long number_of_bytes_to_set)
+void memset(unsigned char *start_addr, unsigned char set_value, unsigned long number_of_bytes_to_set)
 {
-  unsigned char *slider = (unsigned char *)start_addr;
+  unsigned char *slider = start_addr;
 
   for (unsigned char i = 0; i < number_of_bytes_to_set; i++)
   {

@@ -9,9 +9,13 @@ void kernel_main(void)
     printf("\nInitializing stvec with trap handler...\n");
     initialize_stvec();
 
-
-
-
+    unsigned char *get_nine_bytes = malloc(9);
+    printf("%d\n", *get_nine_bytes - 1 );
+    for (int i = 0; i < 10; i++)
+    {
+        printf("%d\n", *get_nine_bytes);
+        get_nine_bytes++;
+    }
 
     PANIC("Code Completed!!!");
 
