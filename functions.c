@@ -354,7 +354,7 @@ struct process *create_process(unsigned long proc_entry_point)
   //Start the stack from the last index
   unsigned long *sp = (unsigned long *) &new_process->stack[PROCESS_STACK_SIZE];
 
-  printf("Value of local stack pointer variable before decrement: %x\n", sp);
+
   //Allocate memory for 13 registers using decrement
   *--sp = 0;                // s11
   *--sp = 0;                // s10
@@ -370,7 +370,7 @@ struct process *create_process(unsigned long proc_entry_point)
   *--sp = 0;                // s0
   *--sp = proc_entry_point; // ra (program counter)
 
-  printf("Value of local stack pointer variable after decrement: %x\n", sp);
+
 
   new_process->sp = sp;
   new_process->state = ASSIGNED;

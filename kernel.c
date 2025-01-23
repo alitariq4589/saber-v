@@ -30,21 +30,11 @@ void kernel_main(void)
     // ============================================//
     // Write your code here!
 
-    // Created first process
+    // Created processes
     proc_a = create_process((unsigned long) process_a_entry);
     proc_b = create_process((unsigned long) process_b_entry);
 
-    // unsigned long *process_a_stackpointer_variable = proc_a->sp;
-    unsigned long *process_b_stackpointer = proc_b->sp;
-    printf("Process A entry point: %x\n", process_a_entry);
-    printf("Process B entry point: %x\n", process_b_entry);
-    // printf("Process a stack array address: %x\n", process_a_stackpointer);
-    for (int i=0; i<13; i++){
-        printf("The address:%x      ", process_b_stackpointer+i);
-        printf("The value: %x\n",*(process_b_stackpointer+i));
 
-
-    }
     process_a_entry();
 
 
