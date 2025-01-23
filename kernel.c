@@ -1,5 +1,23 @@
-#include "kernel.h"
+
 #include "functions.h"
+
+struct process *proc_a;
+struct process *proc_b;
+
+
+
+void process_a_entry(){
+    printf("\nIn Process A\n");
+
+    __asm__ __volatile__("nop\n" "nop\n" "nop\n");
+    switch_context(&proc_a->sp, &proc_b->sp);
+}
+void process_b_entry(){
+    printf("\nIn Process B\n");
+
+    switch_context(&proc_b->sp, &proc_a->sp);
+}
+
 
 /*Main function for the kernel which is called by boot function*/
 void kernel_main(void)
@@ -9,14 +27,29 @@ void kernel_main(void)
     printf("\nInitializing stvec with trap handler...\n");
     initialize_stvec();
 
-    unsigned char *get_nine_bytes = malloc(9);
-    printf("The address of the allocated memory is: %x\n", get_nine_bytes);
+    // ============================================//
+    // Write your code here!
 
-    for (int i = 0; i < 10; i++)
-    {
-        printf("%d\n", *get_nine_bytes);
-        get_nine_bytes++;
+    // Created first process
+    proc_a = create_process((unsigned long) process_a_entry);
+    proc_b = create_process((unsigned long) process_b_entry);
+
+    // unsigned long *process_a_stackpointer_variable = proc_a->sp;
+    unsigned long *process_b_stackpointer = proc_b->sp;
+    printf("Process A entry point: %x\n", process_a_entry);
+    printf("Process B entry point: %x\n", process_b_entry);
+    // printf("Process a stack array address: %x\n", process_a_stackpointer);
+    for (int i=0; i<13; i++){
+        printf("The address:%x      ", process_b_stackpointer+i);
+        printf("The value: %x\n",*(process_b_stackpointer+i));
+
+
     }
+    process_a_entry();
+
+
+
+    // ============================================//
 
     PANIC("Code Completed!!!");
 

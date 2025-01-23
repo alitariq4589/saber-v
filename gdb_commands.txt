@@ -1,0 +1,5 @@
+target remote localhost:1234
+break switch_context
+tui enable
+layout asm
+layout reg

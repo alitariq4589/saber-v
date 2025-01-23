@@ -1,4 +1,3 @@
-#include "kernel.h"
 #include "functions.h"
 
 const char *exception_cause[] = {
@@ -171,10 +170,9 @@ void handle_trap()
 
   unsigned long exception_type_index = (scause & 0x1f) + ((0x80000000 & scause) * 20);
 
-  printf("The index is: %d\n", exception_type_index);
 
   printf("\n\n      === Exception Encountered ===    \n\n");
-  printf("\nException Type: %s !\n", exception_cause[exception_type_index]);
+  printf("\nException Type: %s!\n", exception_cause[exception_type_index]);
   PANIC("Unexpected trap scause=%x, stval=%x, sepc=%x\n", scause, stval, user_pc);
 }
 
@@ -260,12 +258,13 @@ kernel_entry(void)
 /*Allocates the number of bytes of memory and returns the starting address of the alloacted memory. The memory which is used for this is defined in the linker script as __free_mem and is 64MB. The function sets 0s in all the addresses in the memory*/
 unsigned char *malloc(unsigned long number_of_bytes)
 {
-  unsigned char *next_address = __free_mem;
+  unsigned char *next_address = (unsigned char *) __free_mem;
   unsigned char *starting_address = next_address;
 
   next_address += number_of_bytes;
 
-  for (int i=0; i<number_of_bytes-1; i++){
+  for (unsigned int i = 0; i < number_of_bytes - 1; i++)
+  {
     memset(starting_address, 0, number_of_bytes);
   }
   return starting_address;
@@ -282,3 +281,100 @@ void memset(unsigned char *start_addr, unsigned char set_value, unsigned long nu
     slider++;
   }
 }
+
+__attribute__((naked))
+
+void
+switch_context(unsigned long *prev_process_stack_pointer, unsigned long *next_process_stack_pointer)
+{
+
+  __asm__ __volatile__(
+      "addi sp, sp, -13*4\n"
+
+      // Save Callee saved registers
+      "sw ra, 0(sp)\n"
+      "sw s0, 4(sp)\n"
+      "sw s1, 8(sp)\n"
+      "sw s2, 12(sp)\n"
+      "sw s3, 16(sp)\n"
+      "sw s4, 20(sp)\n"
+      "sw s5, 24(sp)\n"
+      "sw s6, 28(sp)\n"
+      "sw s7, 32(sp)\n"
+      "sw s8, 36(sp)\n"
+      "sw s9, 40(sp)\n"
+      "sw s10, 44(sp)\n"
+      "sw s11, 48(sp)\n"
+      
+
+      // swap the stackpointer and save the previous one
+      "sw sp, 0(a0)\n"
+      "lw sp, 0(a1)\n"
+
+      // Get the registers from new stackpointer
+      "lw ra, 0(sp)\n"
+      "lw s0, 4(sp)\n"
+      "lw s1, 8(sp)\n"
+      "lw s2, 12(sp)\n"
+      "lw s3, 16(sp)\n"
+      "lw s4, 20(sp)\n"
+      "lw s5, 24(sp)\n"
+      "lw s6, 28(sp)\n"
+      "lw s7, 32(sp)\n"
+      "lw s8, 36(sp)\n"
+      "lw s9, 40(sp)\n"
+      "lw s10, 44(sp)\n"
+      "lw s11, 48(sp)\n"
+      "addi sp, sp, 13*4\n"
+      "ret\n"
+
+  );
+}
+
+struct process procs[MAX_PROCS];
+
+struct process *create_process(unsigned long proc_entry_point)
+{
+  struct process *new_process;
+  int i;
+  for (i = 0; i < MAX_PROCS; i++)
+  {
+    if (procs[i].state == UNASSIGNED)
+    {
+      new_process = &procs[i];
+      break;
+    }
+  }
+
+  if (i == MAX_PROCS)
+    PANIC("\nNo free process to allocate!\n");
+
+  new_process->pid = i;
+
+  //Start the stack from the last index
+  unsigned long *sp = (unsigned long *) &new_process->stack[PROCESS_STACK_SIZE];
+
+  printf("Value of local stack pointer variable before decrement: %x\n", sp);
+  //Allocate memory for 13 registers using decrement
+  *--sp = 0;                // s11
+  *--sp = 0;                // s10
+  *--sp = 0;                // s9
+  *--sp = 0;                // s8
+  *--sp = 0;                // s7
+  *--sp = 0;                // s6
+  *--sp = 0;                // s5
+  *--sp = 0;                // s4
+  *--sp = 0;                // s3
+  *--sp = 0;                // s2
+  *--sp = 0;                // s1
+  *--sp = 0;                // s0
+  *--sp = proc_entry_point; // ra (program counter)
+
+  printf("Value of local stack pointer variable after decrement: %x\n", sp);
+
+  new_process->sp = sp;
+  new_process->state = ASSIGNED;
+  return new_process;
+}
+
+

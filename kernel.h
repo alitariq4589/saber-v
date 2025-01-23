@@ -1,9 +1,15 @@
-#pragma once
+#ifndef KERNEL_H
+#define KERNEL_H
 
 #define va_list __builtin_va_list
 #define va_arg __builtin_va_arg
 #define va_start __builtin_va_start
 #define va_end __builtin_va_end
+
+#define MAX_PROCS 10
+#define UNASSIGNED 0
+#define ASSIGNED 1
+#define PROCESS_STACK_SIZE 8192
 
 #define PANIC(fmt, ...)                                                                    \
     do                                                                                     \
@@ -63,3 +69,13 @@ struct sbiret
     long error;
     long value;
 };
+
+struct process
+{
+    unsigned long pid;
+    unsigned long state;
+    unsigned long *sp;
+    unsigned char stack[PROCESS_STACK_SIZE];
+};
+
+#endif
