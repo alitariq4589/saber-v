@@ -5,7 +5,7 @@ Disassembly of section .text:
 
 80200000 <boot>:
 80200000: 37 55 23 80  	lui	a0, 0x80235
-80200004: 13 05 05 ec  	addi	a0, a0, -0x140
+80200004: 13 05 85 eb  	addi	a0, a0, -0x148
 80200008: 2a 81        	mv	sp, a0
 8020000a: 6f 00 a0 05  	j	0x80200064 <kernel_main>
 
@@ -13,17 +13,17 @@ Disassembly of section .text:
 8020000e: 41 11        	addi	sp, sp, -0x10
 80200010: 06 c6        	sw	ra, 0xc(sp)
 80200012: 37 05 20 80  	lui	a0, 0x80200
-80200016: 13 05 05 75  	addi	a0, a0, 0x750
+80200016: 13 05 05 77  	addi	a0, a0, 0x770
 8020001a: d1 28        	jal	0x802000ee <printf>
 8020001c: 01 00        	nop
 8020001e: 01 00        	nop
 80200020: 01 00        	nop
 80200022: 37 15 20 80  	lui	a0, 0x80201
-80200026: 03 25 05 e4  	lw	a0, -0x1c0(a0)
+80200026: 03 25 05 e6  	lw	a0, -0x1a0(a0)
 8020002a: b7 15 20 80  	lui	a1, 0x80201
-8020002e: 83 a5 45 e4  	lw	a1, -0x1bc(a1)
-80200032: 21 05        	addi	a0, a0, 0x8
-80200034: a1 05        	addi	a1, a1, 0x8
+8020002e: 83 a5 45 e6  	lw	a1, -0x19c(a1)
+80200032: 11 05        	addi	a0, a0, 0x4
+80200034: 91 05        	addi	a1, a1, 0x4
 80200036: b2 40        	lw	ra, 0xc(sp)
 80200038: 41 01        	addi	sp, sp, 0x10
 8020003a: cd a1        	j	0x8020051c <switch_context>
@@ -32,14 +32,14 @@ Disassembly of section .text:
 8020003c: 41 11        	addi	sp, sp, -0x10
 8020003e: 06 c6        	sw	ra, 0xc(sp)
 80200040: 37 15 20 80  	lui	a0, 0x80201
-80200044: 13 05 35 8c  	addi	a0, a0, -0x73d
+80200044: 13 05 35 8e  	addi	a0, a0, -0x71d
 80200048: 5d 20        	jal	0x802000ee <printf>
 8020004a: 37 15 20 80  	lui	a0, 0x80201
-8020004e: 03 25 45 e4  	lw	a0, -0x1bc(a0)
+8020004e: 03 25 45 e6  	lw	a0, -0x19c(a0)
 80200052: b7 15 20 80  	lui	a1, 0x80201
-80200056: 83 a5 05 e4  	lw	a1, -0x1c0(a1)
-8020005a: 21 05        	addi	a0, a0, 0x8
-8020005c: a1 05        	addi	a1, a1, 0x8
+80200056: 83 a5 05 e6  	lw	a1, -0x1a0(a1)
+8020005a: 11 05        	addi	a0, a0, 0x4
+8020005c: 91 05        	addi	a1, a1, 0x4
 8020005e: b2 40        	lw	ra, 0xc(sp)
 80200060: 41 01        	addi	sp, sp, 0x10
 80200062: 6d a9        	j	0x8020051c <switch_context>
@@ -51,34 +51,34 @@ Disassembly of section .text:
 8020006a: 26 c2        	sw	s1, 0x4(sp)
 8020006c: dd 24        	jal	0x80200352 <print_title>
 8020006e: 37 05 20 80  	lui	a0, 0x80200
-80200072: 13 05 85 70  	addi	a0, a0, 0x708
+80200072: 13 05 85 72  	addi	a0, a0, 0x728
 80200076: a5 28        	jal	0x802000ee <printf>
 80200078: a9 2e        	jal	0x802003d2 <initialize_stvec>
 8020007a: 37 05 20 80  	lui	a0, 0x80200
 8020007e: 13 05 e5 00  	addi	a0, a0, 0xe
 80200082: c5 21        	jal	0x80200562 <create_process>
 80200084: 37 14 20 80  	lui	s0, 0x80201
-80200088: 23 20 a4 e4  	sw	a0, -0x1c0(s0)
+80200088: 23 20 a4 e6  	sw	a0, -0x1a0(s0)
 8020008c: 37 05 20 80  	lui	a0, 0x80200
 80200090: 13 05 c5 03  	addi	a0, a0, 0x3c
 80200094: f9 21        	jal	0x80200562 <create_process>
 80200096: b7 14 20 80  	lui	s1, 0x80201
-8020009a: 23 a2 a4 e4  	sw	a0, -0x1bc(s1)
+8020009a: 23 a2 a4 e6  	sw	a0, -0x19c(s1)
 8020009e: 37 05 20 80  	lui	a0, 0x80200
-802000a2: 13 05 05 75  	addi	a0, a0, 0x750
+802000a2: 13 05 05 77  	addi	a0, a0, 0x770
 802000a6: a1 20        	jal	0x802000ee <printf>
 802000a8: 01 00        	nop
 802000aa: 01 00        	nop
 802000ac: 01 00        	nop
-802000ae: 03 25 04 e4  	lw	a0, -0x1c0(s0)
-802000b2: 83 a5 44 e4  	lw	a1, -0x1bc(s1)
-802000b6: 21 05        	addi	a0, a0, 0x8
-802000b8: a1 05        	addi	a1, a1, 0x8
+802000ae: 03 25 04 e6  	lw	a0, -0x1a0(s0)
+802000b2: 83 a5 44 e6  	lw	a1, -0x19c(s1)
+802000b6: 11 05        	addi	a0, a0, 0x4
+802000b8: 91 05        	addi	a1, a1, 0x4
 802000ba: 8d 21        	jal	0x8020051c <switch_context>
 802000bc: 37 05 20 80  	lui	a0, 0x80200
-802000c0: 13 05 25 69  	addi	a0, a0, 0x692
+802000c0: 13 05 25 6b  	addi	a0, a0, 0x6b2
 802000c4: b7 05 20 80  	lui	a1, 0x80200
-802000c8: 93 85 95 68  	addi	a1, a1, 0x689
+802000c8: 93 85 95 6a  	addi	a1, a1, 0x6a9
 802000cc: 13 06 c0 02  	li	a2, 0x2c
 802000d0: 39 28        	jal	0x802000ee <printf>
 802000d2: 01 a0        	j	0x802000d2 <kernel_main+0x6e>
@@ -123,7 +123,7 @@ Disassembly of section .text:
 80200122: 93 0f 30 06  	li	t6, 0x63
 80200126: 13 09 80 07  	li	s2, 0x78
 8020012a: 37 05 20 80  	lui	a0, 0x80200
-8020012e: 93 09 f5 6b  	addi	s3, a0, 0x6bf
+8020012e: 93 09 f5 6d  	addi	s3, a0, 0x6df
 80200132: 03 c5 02 00  	lbu	a0, 0x0(t0)
 80200136: 63 02 65 02  	beq	a0, t1, 0x8020015a <printf+0x6c>
 8020013a: 63 06 05 20  	beqz	a0, 0x80200346 <printf+0x258>
@@ -339,40 +339,40 @@ Disassembly of section .text:
 80200354: 06 c6        	sw	ra, 0xc(sp)
 80200356: 22 c4        	sw	s0, 0x8(sp)
 80200358: 37 15 20 80  	lui	a0, 0x80201
-8020035c: 13 04 55 c8  	addi	s0, a0, -0x37b
+8020035c: 13 04 55 ca  	addi	s0, a0, -0x35b
 80200360: 22 85        	mv	a0, s0
 80200362: 71 33        	jal	0x802000ee <printf>
 80200364: 37 05 20 80  	lui	a0, 0x80200
-80200368: 13 05 55 78  	addi	a0, a0, 0x785
+80200368: 13 05 55 7a  	addi	a0, a0, 0x7a5
 8020036c: 49 33        	jal	0x802000ee <printf>
 8020036e: 37 15 20 80  	lui	a0, 0x80201
-80200372: 13 05 95 c8  	addi	a0, a0, -0x377
+80200372: 13 05 95 ca  	addi	a0, a0, -0x357
 80200376: a5 3b        	jal	0x802000ee <printf>
 80200378: 37 15 20 80  	lui	a0, 0x80201
-8020037c: 13 05 e5 b4  	addi	a0, a0, -0x4b2
+8020037c: 13 05 e5 b6  	addi	a0, a0, -0x492
 80200380: bd 33        	jal	0x802000ee <printf>
 80200382: 37 15 20 80  	lui	a0, 0x80201
-80200386: 13 05 a5 9e  	addi	a0, a0, -0x616
+80200386: 13 05 a5 a0  	addi	a0, a0, -0x5f6
 8020038a: 95 33        	jal	0x802000ee <printf>
 8020038c: 37 15 20 80  	lui	a0, 0x80201
-80200390: 13 05 c5 82  	addi	a0, a0, -0x7d4
+80200390: 13 05 c5 84  	addi	a0, a0, -0x7b4
 80200394: a9 3b        	jal	0x802000ee <printf>
 80200396: 37 15 20 80  	lui	a0, 0x80201
-8020039a: 13 05 65 d2  	addi	a0, a0, -0x2da
+8020039a: 13 05 65 d4  	addi	a0, a0, -0x2ba
 8020039e: 81 3b        	jal	0x802000ee <printf>
 802003a0: 22 85        	mv	a0, s0
 802003a2: b1 33        	jal	0x802000ee <printf>
 802003a4: 37 15 20 80  	lui	a0, 0x80201
-802003a8: 13 05 85 99  	addi	a0, a0, -0x668
+802003a8: 13 05 85 9b  	addi	a0, a0, -0x648
 802003ac: 89 33        	jal	0x802000ee <printf>
 802003ae: 37 15 20 80  	lui	a0, 0x80201
-802003b2: 13 05 35 a9  	addi	a0, a0, -0x56d
+802003b2: 13 05 35 ab  	addi	a0, a0, -0x54d
 802003b6: 25 3b        	jal	0x802000ee <printf>
 802003b8: 37 15 20 80  	lui	a0, 0x80201
-802003bc: 13 05 e5 93  	addi	a0, a0, -0x6c2
+802003bc: 13 05 e5 95  	addi	a0, a0, -0x6a2
 802003c0: 3d 33        	jal	0x802000ee <printf>
 802003c2: 37 15 20 80  	lui	a0, 0x80201
-802003c6: 13 05 25 ab  	addi	a0, a0, -0x54e
+802003c6: 13 05 25 ad  	addi	a0, a0, -0x52e
 802003ca: b2 40        	lw	ra, 0xc(sp)
 802003cc: 22 44        	lw	s0, 0x8(sp)
 802003ce: 41 01        	addi	sp, sp, 0x10
@@ -466,21 +466,21 @@ Disassembly of section .text:
 80200484: 73 29 10 14  	csrr	s2, sepc
 80200488: 13 f4 f4 01  	andi	s0, s1, 0x1f
 8020048c: 37 15 20 80  	lui	a0, 0x80201
-80200490: 13 05 55 ab  	addi	a0, a0, -0x54b
+80200490: 13 05 55 ad  	addi	a0, a0, -0x52b
 80200494: a9 39        	jal	0x802000ee <printf>
 80200496: 37 15 20 80  	lui	a0, 0x80201
-8020049a: 13 05 85 db  	addi	a0, a0, -0x248
+8020049a: 13 05 85 dd  	addi	a0, a0, -0x228
 8020049e: 0a 04        	slli	s0, s0, 0x2
 802004a0: 22 95        	add	a0, a0, s0
 802004a2: 0c 41        	lw	a1, 0x0(a0)
 802004a4: 37 15 20 80  	lui	a0, 0x80201
-802004a8: 13 05 15 90  	addi	a0, a0, -0x6ff
+802004a8: 13 05 15 92  	addi	a0, a0, -0x6df
 802004ac: 89 31        	jal	0x802000ee <printf>
 802004ae: 37 15 20 80  	lui	a0, 0x80201
-802004b2: 13 05 35 c3  	addi	a0, a0, -0x3cd
+802004b2: 13 05 35 c5  	addi	a0, a0, -0x3ad
 802004b6: b7 15 20 80  	lui	a1, 0x80201
-802004ba: 93 85 35 bf  	addi	a1, a1, -0x40d
-802004be: 13 06 00 0b  	li	a2, 0xb0
+802004ba: 93 85 35 c1  	addi	a1, a1, -0x3ed
+802004be: 13 06 10 0b  	li	a2, 0xb1
 802004c2: a6 86        	mv	a3, s1
 802004c4: 4e 87        	mv	a4, s3
 802004c6: ca 87        	mv	a5, s2
@@ -554,104 +554,109 @@ Disassembly of section .text:
 
 80200562 <create_process>:
 80200562: b7 15 20 80  	lui	a1, 0x80201
-80200566: 93 85 85 e4  	addi	a1, a1, -0x1b8
-8020056a: d0 41        	lw	a2, 0x4(a1)
-8020056c: 55 c6        	beqz	a2, 0x80200618 <create_process+0xb6>
-8020056e: 09 66        	lui	a2, 0x2
-80200570: 2e 96        	add	a2, a2, a1
-80200572: 10 4a        	lw	a2, 0x10(a2)
-80200574: 49 c2        	beqz	a2, 0x802005f6 <create_process+0x94>
-80200576: 37 16 20 80  	lui	a2, 0x80201
-8020057a: 13 06 86 e4  	addi	a2, a2, -0x1b8
-8020057e: 91 66        	lui	a3, 0x4
-80200580: b2 96        	add	a3, a3, a2
-80200582: d4 4e        	lw	a3, 0x1c(a3)
-80200584: bd ca        	beqz	a3, 0x802005fa <create_process+0x98>
-80200586: 99 66        	lui	a3, 0x6
-80200588: 36 96        	add	a2, a2, a3
-8020058a: 10 56        	lw	a2, 0x28(a2)
-8020058c: 2d ca        	beqz	a2, 0x802005fe <create_process+0x9c>
-8020058e: 37 16 20 80  	lui	a2, 0x80201
-80200592: 13 06 86 e4  	addi	a2, a2, -0x1b8
-80200596: a1 66        	lui	a3, 0x8
-80200598: b2 96        	add	a3, a3, a2
-8020059a: d4 5a        	lw	a3, 0x34(a3)
-8020059c: bd c2        	beqz	a3, 0x80200602 <create_process+0xa0>
-8020059e: a9 66        	lui	a3, 0xa
-802005a0: 36 96        	add	a2, a2, a3
-802005a2: 30 42        	lw	a2, 0x40(a2)
-802005a4: 2d c2        	beqz	a2, 0x80200606 <create_process+0xa4>
-802005a6: 37 16 20 80  	lui	a2, 0x80201
-802005aa: 13 06 86 e4  	addi	a2, a2, -0x1b8
-802005ae: b1 66        	lui	a3, 0xc
-802005b0: b2 96        	add	a3, a3, a2
-802005b2: f4 46        	lw	a3, 0x4c(a3)
-802005b4: b9 ca        	beqz	a3, 0x8020060a <create_process+0xa8>
-802005b6: b9 66        	lui	a3, 0xe
-802005b8: 36 96        	add	a2, a2, a3
-802005ba: 30 4e        	lw	a2, 0x58(a2)
-802005bc: 29 ca        	beqz	a2, 0x8020060e <create_process+0xac>
-802005be: 37 16 20 80  	lui	a2, 0x80201
-802005c2: 13 06 86 e4  	addi	a2, a2, -0x1b8
-802005c6: c1 66        	lui	a3, 0x10
-802005c8: b2 96        	add	a3, a3, a2
-802005ca: f4 52        	lw	a3, 0x64(a3)
-802005cc: b9 c2        	beqz	a3, 0x80200612 <create_process+0xb0>
-802005ce: c9 66        	lui	a3, 0x12
-802005d0: 36 96        	add	a2, a2, a3
-802005d2: 30 5a        	lw	a2, 0x70(a2)
-802005d4: 29 c2        	beqz	a2, 0x80200616 <create_process+0xb4>
-802005d6: 41 11        	addi	sp, sp, -0x10
-802005d8: 06 c6        	sw	ra, 0xc(sp)
-802005da: 37 15 20 80  	lui	a0, 0x80201
-802005de: 13 05 45 b1  	addi	a0, a0, -0x4ec
-802005e2: b7 15 20 80  	lui	a1, 0x80201
-802005e6: 93 85 35 bf  	addi	a1, a1, -0x40d
-802005ea: 13 06 e0 15  	li	a2, 0x15e
-802005ee: 01 36        	jal	0x802000ee <printf>
-802005f0: b2 40        	lw	ra, 0xc(sp)
-802005f2: 41 01        	addi	sp, sp, 0x10
-802005f4: 01 a0        	j	0x802005f4 <create_process+0x92>
-802005f6: 05 46        	li	a2, 0x1
-802005f8: 05 a0        	j	0x80200618 <create_process+0xb6>
-802005fa: 09 46        	li	a2, 0x2
-802005fc: 31 a8        	j	0x80200618 <create_process+0xb6>
-802005fe: 0d 46        	li	a2, 0x3
-80200600: 21 a8        	j	0x80200618 <create_process+0xb6>
-80200602: 11 46        	li	a2, 0x4
-80200604: 11 a8        	j	0x80200618 <create_process+0xb6>
-80200606: 15 46        	li	a2, 0x5
-80200608: 01 a8        	j	0x80200618 <create_process+0xb6>
-8020060a: 19 46        	li	a2, 0x6
-8020060c: 31 a0        	j	0x80200618 <create_process+0xb6>
-8020060e: 1d 46        	li	a2, 0x7
-80200610: 21 a0        	j	0x80200618 <create_process+0xb6>
-80200612: 21 46        	li	a2, 0x8
-80200614: 11 a0        	j	0x80200618 <create_process+0xb6>
-80200616: 25 46        	li	a2, 0x9
-80200618: 89 66        	lui	a3, 0x2
-8020061a: 13 87 c6 00  	addi	a4, a3, 0xc
-8020061e: 33 07 e6 02  	mul	a4, a2, a4
-80200622: ba 95        	add	a1, a1, a4
-80200624: 90 c1        	sw	a2, 0x0(a1)
-80200626: 33 86 d5 00  	add	a2, a1, a3
-8020062a: 23 24 06 00  	sw	zero, 0x8(a2)
-8020062e: 23 22 06 00  	sw	zero, 0x4(a2)
-80200632: 23 20 06 00  	sw	zero, 0x0(a2)
-80200636: 23 2e 06 fe  	sw	zero, -0x4(a2)
-8020063a: 23 2c 06 fe  	sw	zero, -0x8(a2)
-8020063e: 23 2a 06 fe  	sw	zero, -0xc(a2)
-80200642: 23 28 06 fe  	sw	zero, -0x10(a2)
-80200646: 23 26 06 fe  	sw	zero, -0x14(a2)
-8020064a: 23 24 06 fe  	sw	zero, -0x18(a2)
-8020064e: 23 22 06 fe  	sw	zero, -0x1c(a2)
-80200652: 23 20 06 fe  	sw	zero, -0x20(a2)
-80200656: 23 2e 06 fc  	sw	zero, -0x24(a2)
-8020065a: 13 86 86 fd  	addi	a2, a3, -0x28
-8020065e: 2e 96        	add	a2, a2, a1
-80200660: 08 c2        	sw	a0, 0x0(a2)
-80200662: 90 c5        	sw	a2, 0x8(a1)
-80200664: 05 45        	li	a0, 0x1
-80200666: c8 c1        	sw	a0, 0x4(a1)
-80200668: 2e 85        	mv	a0, a1
-8020066a: 82 80        	ret
+80200566: 03 c6 95 e6  	lbu	a2, -0x197(a1)
+8020056a: 69 c2        	beqz	a2, 0x8020062c <create_process+0xca>
+8020056c: 13 86 85 e6  	addi	a2, a1, -0x198
+80200570: 89 66        	lui	a3, 0x2
+80200572: 36 96        	add	a2, a2, a3
+80200574: 03 46 96 00  	lbu	a2, 0x9(a2)
+80200578: 49 ca        	beqz	a2, 0x8020060a <create_process+0xa8>
+8020057a: 37 16 20 80  	lui	a2, 0x80201
+8020057e: 13 06 86 e6  	addi	a2, a2, -0x198
+80200582: 91 66        	lui	a3, 0x4
+80200584: b2 96        	add	a3, a3, a2
+80200586: 83 c6 16 01  	lbu	a3, 0x11(a3)
+8020058a: d1 c2        	beqz	a3, 0x8020060e <create_process+0xac>
+8020058c: 99 66        	lui	a3, 0x6
+8020058e: 36 96        	add	a2, a2, a3
+80200590: 03 46 96 01  	lbu	a2, 0x19(a2)
+80200594: 3d ce        	beqz	a2, 0x80200612 <create_process+0xb0>
+80200596: 37 16 20 80  	lui	a2, 0x80201
+8020059a: 13 06 86 e6  	addi	a2, a2, -0x198
+8020059e: a1 66        	lui	a3, 0x8
+802005a0: b2 96        	add	a3, a3, a2
+802005a2: 83 c6 16 02  	lbu	a3, 0x21(a3)
+802005a6: a5 ca        	beqz	a3, 0x80200616 <create_process+0xb4>
+802005a8: a9 66        	lui	a3, 0xa
+802005aa: 36 96        	add	a2, a2, a3
+802005ac: 03 46 96 02  	lbu	a2, 0x29(a2)
+802005b0: 2d c6        	beqz	a2, 0x8020061a <create_process+0xb8>
+802005b2: 37 16 20 80  	lui	a2, 0x80201
+802005b6: 13 06 86 e6  	addi	a2, a2, -0x198
+802005ba: b1 66        	lui	a3, 0xc
+802005bc: b2 96        	add	a3, a3, a2
+802005be: 83 c6 16 03  	lbu	a3, 0x31(a3)
+802005c2: b1 ce        	beqz	a3, 0x8020061e <create_process+0xbc>
+802005c4: b9 66        	lui	a3, 0xe
+802005c6: 36 96        	add	a2, a2, a3
+802005c8: 03 46 96 03  	lbu	a2, 0x39(a2)
+802005cc: 39 ca        	beqz	a2, 0x80200622 <create_process+0xc0>
+802005ce: 37 16 20 80  	lui	a2, 0x80201
+802005d2: 13 06 86 e6  	addi	a2, a2, -0x198
+802005d6: c1 66        	lui	a3, 0x10
+802005d8: b2 96        	add	a3, a3, a2
+802005da: 83 c6 16 04  	lbu	a3, 0x41(a3)
+802005de: a1 c6        	beqz	a3, 0x80200626 <create_process+0xc4>
+802005e0: c9 66        	lui	a3, 0x12
+802005e2: 36 96        	add	a2, a2, a3
+802005e4: 03 46 96 04  	lbu	a2, 0x49(a2)
+802005e8: 29 c2        	beqz	a2, 0x8020062a <create_process+0xc8>
+802005ea: 41 11        	addi	sp, sp, -0x10
+802005ec: 06 c6        	sw	ra, 0xc(sp)
+802005ee: 37 15 20 80  	lui	a0, 0x80201
+802005f2: 13 05 45 b3  	addi	a0, a0, -0x4cc
+802005f6: b7 15 20 80  	lui	a1, 0x80201
+802005fa: 93 85 35 c1  	addi	a1, a1, -0x3ed
+802005fe: 13 06 f0 15  	li	a2, 0x15f
+80200602: f5 34        	jal	0x802000ee <printf>
+80200604: b2 40        	lw	ra, 0xc(sp)
+80200606: 41 01        	addi	sp, sp, 0x10
+80200608: 01 a0        	j	0x80200608 <create_process+0xa6>
+8020060a: 05 46        	li	a2, 0x1
+8020060c: 05 a0        	j	0x8020062c <create_process+0xca>
+8020060e: 09 46        	li	a2, 0x2
+80200610: 31 a8        	j	0x8020062c <create_process+0xca>
+80200612: 0d 46        	li	a2, 0x3
+80200614: 21 a8        	j	0x8020062c <create_process+0xca>
+80200616: 11 46        	li	a2, 0x4
+80200618: 11 a8        	j	0x8020062c <create_process+0xca>
+8020061a: 15 46        	li	a2, 0x5
+8020061c: 01 a8        	j	0x8020062c <create_process+0xca>
+8020061e: 19 46        	li	a2, 0x6
+80200620: 31 a0        	j	0x8020062c <create_process+0xca>
+80200622: 1d 46        	li	a2, 0x7
+80200624: 21 a0        	j	0x8020062c <create_process+0xca>
+80200626: 21 46        	li	a2, 0x8
+80200628: 11 a0        	j	0x8020062c <create_process+0xca>
+8020062a: 25 46        	li	a2, 0x9
+8020062c: 93 16 36 00  	slli	a3, a2, 0x3
+80200630: 13 17 d6 00  	slli	a4, a2, 0xd
+80200634: d9 8e        	or	a3, a3, a4
+80200636: 93 85 85 e6  	addi	a1, a1, -0x198
+8020063a: b6 95        	add	a1, a1, a3
+8020063c: 23 80 c5 00  	sb	a2, 0x0(a1)
+80200640: 09 66        	lui	a2, 0x2
+80200642: b3 86 c5 00  	add	a3, a1, a2
+80200646: 23 a2 06 00  	sw	zero, 0x4(a3)
+8020064a: 23 a0 06 00  	sw	zero, 0x0(a3)
+8020064e: 23 ae 06 fe  	sw	zero, -0x4(a3)
+80200652: 23 ac 06 fe  	sw	zero, -0x8(a3)
+80200656: 23 aa 06 fe  	sw	zero, -0xc(a3)
+8020065a: 23 a8 06 fe  	sw	zero, -0x10(a3)
+8020065e: 23 a6 06 fe  	sw	zero, -0x14(a3)
+80200662: 23 a4 06 fe  	sw	zero, -0x18(a3)
+80200666: 23 a2 06 fe  	sw	zero, -0x1c(a3)
+8020066a: 23 a0 06 fe  	sw	zero, -0x20(a3)
+8020066e: 23 ae 06 fc  	sw	zero, -0x24(a3)
+80200672: 23 ac 06 fc  	sw	zero, -0x28(a3)
+80200676: 13 06 46 fd  	addi	a2, a2, -0x2c
+8020067a: 2e 96        	add	a2, a2, a1
+8020067c: 08 c2        	sw	a0, 0x0(a2)
+8020067e: d0 c1        	sw	a2, 0x4(a1)
+80200680: 05 45        	li	a0, 0x1
+80200682: a3 80 a5 00  	sb	a0, 0x1(a1)
+80200686: 2e 85        	mv	a0, a1
+80200688: 82 80        	ret
+
+8020068a <yield>:
+8020068a: 82 80        	ret

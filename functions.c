@@ -1,3 +1,4 @@
+
 #include "functions.h"
 
 const char *exception_cause[] = {
@@ -373,8 +374,13 @@ struct process *create_process(unsigned long proc_entry_point)
 
 
   new_process->sp = sp;
+  new_process->state = IDLE;
   new_process->state = ASSIGNED;
   return new_process;
+}
+
+void yield(void){
+
 }
 
 
