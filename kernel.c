@@ -6,16 +6,18 @@ struct process *proc_b;
 
 
 
+
 void process_a_entry(){
     printf("\nIn Process A\n");
-
     __asm__ __volatile__("nop\n" "nop\n" "nop\n");
-    switch_context(&proc_a->sp, &proc_b->sp);
+    // switch_context(&proc_a->sp, &proc_b->sp);
+    yield();
 }
 void process_b_entry(){
     printf("\nIn Process B\n");
 
-    switch_context(&proc_b->sp, &proc_a->sp);
+    // switch_context(&proc_b->sp, &proc_a->sp);
+    yield();
 }
 
 
@@ -32,11 +34,11 @@ void kernel_main(void)
 
     // Created processes
     proc_a = create_process((unsigned long) process_a_entry);
+
     proc_b = create_process((unsigned long) process_b_entry);
 
 
-    process_a_entry();
-
+    start_processes(&process_a_entry,proc_a);
 
 
     // ============================================//

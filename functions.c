@@ -1,5 +1,8 @@
 #include "functions.h"
 
+struct process *current_process;
+struct process procs[MAX_PROCS];
+
 const char *exception_cause[] = {
     "Instruction address misaligned",
     "Instruction access fault",
@@ -170,7 +173,6 @@ void handle_trap()
 
   unsigned long exception_type_index = (scause & 0x1f) + ((0x80000000 & scause) * 20);
 
-
   printf("\n\n      === Exception Encountered ===    \n\n");
   printf("\nException Type: %s!\n", exception_cause[exception_type_index]);
   PANIC("Unexpected trap scause=%x, stval=%x, sepc=%x\n", scause, stval, user_pc);
@@ -258,7 +260,7 @@ kernel_entry(void)
 /*Allocates the number of bytes of memory and returns the starting address of the alloacted memory. The memory which is used for this is defined in the linker script as __free_mem and is 64MB. The function sets 0s in all the addresses in the memory*/
 unsigned char *malloc(unsigned long number_of_bytes)
 {
-  unsigned char *next_address = (unsigned char *) __free_mem;
+  unsigned char *next_address = (unsigned char *)__free_mem;
   unsigned char *starting_address = next_address;
 
   next_address += number_of_bytes;
@@ -305,7 +307,6 @@ switch_context(unsigned long *prev_process_stack_pointer, unsigned long *next_pr
       "sw s9, 40(sp)\n"
       "sw s10, 44(sp)\n"
       "sw s11, 48(sp)\n"
-      
 
       // swap the stackpointer and save the previous one
       "sw sp, 0(a0)\n"
@@ -331,15 +332,13 @@ switch_context(unsigned long *prev_process_stack_pointer, unsigned long *next_pr
   );
 }
 
-struct process procs[MAX_PROCS];
-
 struct process *create_process(unsigned long proc_entry_point)
 {
   struct process *new_process;
   int i;
   for (i = 0; i < MAX_PROCS; i++)
   {
-    if (procs[i].state == UNASSIGNED)
+    if (procs[i].allocation == UNASSIGNED)
     {
       new_process = &procs[i];
       break;
@@ -351,11 +350,10 @@ struct process *create_process(unsigned long proc_entry_point)
 
   new_process->pid = i;
 
-  //Start the stack from the last index
-  unsigned long *sp = (unsigned long *) &new_process->stack[PROCESS_STACK_SIZE];
+  // Start the stack from the last index
+  unsigned long *sp = (unsigned long *)&new_process->stack[PROCESS_STACK_SIZE];
 
-
-  //Allocate memory for 13 registers using decrement
+  // Allocate memory for 13 registers using decrement
   *--sp = 0;                // s11
   *--sp = 0;                // s10
   *--sp = 0;                // s9
@@ -370,11 +368,41 @@ struct process *create_process(unsigned long proc_entry_point)
   *--sp = 0;                // s0
   *--sp = proc_entry_point; // ra (program counter)
 
-
-
   new_process->sp = sp;
-  new_process->state = ASSIGNED;
+  new_process->allocation = ASSIGNED;
+  new_process->state = IDLE;
   return new_process;
 }
 
+void start_processes(unsigned long *process_entry_point, struct process *process_structure)
+{
+  process_structure->state = RUNNING;
+  current_process = process_structure;
+  unsigned long (*process_entry)();
+  process_entry = process_entry_point;
+  process_entry();
+}
 
+void yield()
+{
+  printf("\nInside yield function\n");
+  struct process *prev_process;
+  struct process *next_process;
+  // next_process = current_process;
+  for (int i = 0; i < MAX_PROCS; i++)
+  {
+    if (procs[i].allocation == ASSIGNED && i != current_process->pid)
+    {
+      next_process = &procs[i];
+      break;
+    }
+    if (i == MAX_PROCS)
+    {
+      printf("\nWrapping the pid!\n");
+      i = 0;
+    }
+  }
+  prev_process = current_process;
+  current_process = next_process;
+  switch_context(&prev_process->sp, &next_process->sp);
+}

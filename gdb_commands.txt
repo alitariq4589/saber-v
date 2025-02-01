@@ -1,5 +1,5 @@
 target remote localhost:1234
-break switch_context
+break kernel.c:32
 tui enable
 layout asm
 layout reg

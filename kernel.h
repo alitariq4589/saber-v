@@ -9,6 +9,8 @@
 #define MAX_PROCS 10
 #define UNASSIGNED 0
 #define ASSIGNED 1
+#define RUNNING 1
+#define IDLE 0
 #define PROCESS_STACK_SIZE 8192
 
 #define PANIC(fmt, ...)                                                                    \
@@ -72,8 +74,9 @@ struct sbiret
 
 struct process
 {
-    unsigned long pid;
+    int pid;
     unsigned long state;
+    unsigned long allocation;
     unsigned long *sp;
     unsigned char stack[PROCESS_STACK_SIZE];
 };
