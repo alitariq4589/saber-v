@@ -176,6 +176,8 @@ void handle_trap()
   printf("\n\n      === Exception Encountered ===    \n\n");
   printf("\nException Type: %s!\n", exception_cause[exception_type_index]);
   PANIC("Unexpected trap scause=%x, stval=%x, sepc=%x\n", scause, stval, user_pc);
+  // printf("Unexpected trap scause=%x, stval=%x, sepc=%x\n", scause, stval, user_pc);
+  // __asm__ __volatile__("ebreak\n");
 }
 
 /*This is the trap handler*/
@@ -257,18 +259,29 @@ kernel_entry(void)
       "sret\n");
 }
 
-/*Allocates the number of bytes of memory and returns the starting address of the alloacted memory. The memory which is used for this is defined in the linker script as __free_mem and is 64MB. The function sets 0s in all the addresses in the memory*/
+/*This variable works as the pointer which slides forward as the memory is allocated and it prevents memory to be cobbered by other operations once it is allocated by one function*/
+unsigned char *next_address = (unsigned char *)__free_mem;
+
+/*Allocates the number of bytes of memory and returns the starting address of the alloacted memory. The memory which is used for this is defined in the linker script as __free_mem and is 64MB. The function sets 0s in all the addresses in the memory which are to be allocated*/
 unsigned char *malloc(unsigned long number_of_bytes)
 {
-  unsigned char *next_address = (unsigned char *)__free_mem;
   unsigned char *starting_address = next_address;
 
   next_address += number_of_bytes;
 
-  for (unsigned int i = 0; i < number_of_bytes - 1; i++)
-  {
-    memset(starting_address, 0, number_of_bytes);
-  }
+  memset(starting_address, 0, number_of_bytes);
+
+  return starting_address;
+}
+
+/*Allocates the contiguous number of pages in memory and returns the starting address of the first page. The memory which is used for this is defined in the linker script as __free_mem and is 64MB. The function sets 0s in all the addresses in the memory which are to be allocated*/
+unsigned long *malloc_pages(unsigned long number_of_pages)
+{
+  unsigned char *starting_address = next_address;
+
+  next_address += number_of_pages * PAGE_SIZE;
+
+  memset(starting_address, 0, number_of_pages * PAGE_SIZE);
   return starting_address;
 }
 
@@ -277,7 +290,7 @@ void memset(unsigned char *start_addr, unsigned char set_value, unsigned long nu
 {
   unsigned char *slider = start_addr;
 
-  for (unsigned char i = 0; i < number_of_bytes_to_set; i++)
+  for (unsigned int i = 0; i < number_of_bytes_to_set; i++)
   {
     *slider = set_value;
     slider++;
@@ -334,8 +347,12 @@ switch_context(unsigned long *prev_process_stack_pointer, unsigned long *next_pr
 
 struct process *create_process(unsigned long proc_entry_point)
 {
+
+  unsigned long *new_page_table;
+  unsigned int new_page_entry_flags = 0xe0; // WRX flag bits of PTE
   struct process *new_process;
   int i;
+
   for (i = 0; i < MAX_PROCS; i++)
   {
     if (procs[i].allocation == UNASSIGNED)
@@ -349,6 +366,13 @@ struct process *create_process(unsigned long proc_entry_point)
     PANIC("\nNo free process to allocate!\n");
 
   new_process->pid = i;
+  unsigned long a =0;
+  new_page_table = malloc_pages(1);
+  // printf("\nDebug Statement\n");
+  for (unsigned char i = (unsigned char)__kernel_base; i < (unsigned char)__free_mem_end; i += 4096)
+  {
+    map_page(new_page_table, i, i, new_page_entry_flags);
+  }
 
   // Start the stack from the last index
   unsigned long *sp = (unsigned long *)&new_process->stack[PROCESS_STACK_SIZE];
@@ -371,6 +395,7 @@ struct process *create_process(unsigned long proc_entry_point)
   new_process->sp = sp;
   new_process->allocation = ASSIGNED;
   new_process->state = IDLE;
+  
   return new_process;
 }
 
@@ -402,7 +427,31 @@ void yield()
       i = 0;
     }
   }
+
   prev_process = current_process;
   current_process = next_process;
+  unsigned long satp_value = ((unsigned long)next_process->page_table) & 0x80000000;
+
+  __asm__ __volatile__(
+      "sfence.vma\n"
+      "csrw satp, %[root_page_addr]\n"
+      "sfence.vma\n" ::[root_page_addr] "r"(satp_value));
+
   switch_context(&prev_process->sp, &next_process->sp);
+}
+
+void map_page(unsigned long *root_page_addr, unsigned long virt_addr, unsigned long phy_addr, unsigned int flags)
+{
+
+  unsigned long vpn1 = (virt_addr >> 22) & 0x3ff;
+  unsigned long vpn0 = (virt_addr >> 12) & 0x3ff;
+
+  unsigned long *second_page_addr;
+
+  if (root_page_addr[vpn1] & 0x1 != 1)
+  {
+    second_page_addr = malloc_pages(1);                            // Allocate a page in the memory and get its starting address
+    root_page_addr[vpn1] = ((unsigned int)second_page_addr) | 0x1; // Setting the valid bit and adding the address of second table
+  }
+  second_page_addr[vpn0] = phy_addr | flags | 0x1;
 }

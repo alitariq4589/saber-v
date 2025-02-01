@@ -17,4 +17,5 @@ void switch_context(unsigned long *prev_process_stack_pointer, unsigned long *ne
 struct process *create_process(unsigned long proc_entry_point);
 void yield();
 void start_processes(unsigned long *process_entry_point, struct process *process_structure);
+void map_page(unsigned long *root_page_addr, unsigned long virt_addr, unsigned long phy_addr, unsigned int flags);
 // #endif

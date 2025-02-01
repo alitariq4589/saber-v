@@ -6,12 +6,13 @@
 #define va_start __builtin_va_start
 #define va_end __builtin_va_end
 
-#define MAX_PROCS 10
-#define UNASSIGNED 0
-#define ASSIGNED 1
-#define RUNNING 1
-#define IDLE 0
-#define PROCESS_STACK_SIZE 8192
+#define MAX_PROCS           10
+#define UNASSIGNED          0
+#define ASSIGNED            1
+#define RUNNING             1
+#define IDLE                0
+#define PROCESS_STACK_SIZE  8192
+#define PAGE_SIZE           4096
 
 #define PANIC(fmt, ...)                                                                    \
     do                                                                                     \
@@ -28,7 +29,7 @@
 #define READ_REGISTER(reg) ({ unsigned int reg_val; __asm__ __volatile__ ("add %0," #reg ",x0" : "=r"(reg_val) ); reg_val; })
 #define WRITE_REGISTER(reg, value) ({ __asm__ __volatile__("li " #reg "," #value); })
 
-extern char __bss[], __bss_end[], __stack_top[], __free_mem[], __free_mem_end[];
+extern char __bss[], __bss_end[], __stack_top[], __free_mem[], __free_mem_end[], __kernel_base[];
 
 // This is unused yet
 struct trap_frame
@@ -78,6 +79,7 @@ struct process
     unsigned long state;
     unsigned long allocation;
     unsigned long *sp;
+    unsigned long *page_table;
     unsigned char stack[PROCESS_STACK_SIZE];
 };
 
