@@ -103,4 +103,16 @@ Boot HART MEDELEG         : 0x00f0b509
 Initializing stvec with trap handler...
 
 Kernel Panic! : kernel.c : 16: Code Completed!!!
+
+
 ```
+
+## Future Objectives
+
+- [ ] Add essential linux bianaries (e.g. gcc compiler, sh, bash) in the disk space
+- [ ] Add mutithreading support
+- [ ] Add support for running this kernel on RISC-V SBCs (such as VisionFive 1&2, HiFive Unleashed etc.)
+
+### Long-term objective
+
+- [ ] Develop a rust port of this kernel (and possibly opensbi too)
