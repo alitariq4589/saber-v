@@ -105,6 +105,19 @@ Initializing stvec with trap handler...
 Kernel Panic! : kernel.c : 16: Code Completed!!!
 ```
 
+## Debugging with GDB
+
+The file `gdb_commands.txt` contains the commands which are passed to the GDB and can be used for debugging.
+
+Use `run.sh` with `debug` argument to switch to debugging.
+
+Then use the gdb from riscv cross-compiler toolchain with following command to start the program in GDB.
+
+```
+riscv32-unknown-linux-gnu-gdb ./kernel.elf -x ./gdb_commands.txt
+```
+
+
 ## Future Objectives
 
 - [ ] Add essential linux bianaries (e.g. gcc compiler, sh, bash) in the disk space
