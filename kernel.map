@@ -2,7 +2,7 @@
        0        0 80200000     1 . = 0x80200000
 80200000        0        0     1 kernel_base = .
 80200000 80200000      7b6     4 .text
-80200000 80200000        e     2         /tmp/kernel-9db353.o:(.text.boot)
+80200000 80200000        e     2         /tmp/kernel-6e7d03.o:(.text.boot)
 80200000 80200000        0     1                 
 80200000 80200000        0     1                 
 80200000 80200000        0     1                 $x.1
@@ -10,7 +10,7 @@
 80200000 80200000        e     1                 boot
 8020000e 8020000e        0     1                 
 8020000e 8020000e        0     1                 
-8020000e 8020000e       8a     2         /tmp/kernel-9db353.o:(.text)
+8020000e 8020000e       8a     2         /tmp/kernel-6e7d03.o:(.text)
 8020000e 8020000e        0     1                 
 8020000e 8020000e        0     1                 
 8020000e 8020000e        0     1                 $x.0
@@ -55,7 +55,7 @@
 80200096 80200096        0     1                 .LBB2_1
 80200098 80200098        0     1                 
 80200098 80200098        0     1                 
-80200098 80200098      71e     4         /tmp/functions-f12527.o:(.text)
+80200098 80200098      71e     4         /tmp/functions-31ae41.o:(.text)
 80200098 80200098        0     1                 
 80200098 80200098        0     1                 
 80200098 80200098        0     1                 $x.0
@@ -555,23 +555,23 @@
 802007b8 802007b8      763     4 .rodata
 802007b8 802007b8      763     1         <internal>:(.rodata.str1.1)
 80200f1c 80200f1c       88     4 .data
-80200f1c 80200f1c       88     4         /tmp/functions-f12527.o:(.data)
+80200f1c 80200f1c       88     4         /tmp/functions-31ae41.o:(.data)
 80200f1c 80200f1c        0     1                 $d.2
 80200f1c 80200f1c       88     1                 exception_cause
 80200fa4 80200fa4        4     4 .sdata
-80200fa4 80200fa4        4     4         /tmp/functions-f12527.o:(.sdata)
+80200fa4 80200fa4        4     4         /tmp/functions-31ae41.o:(.sdata)
 80200fa4 80200fa4        0     1                 $d.3
 80200fa4 80200fa4        4     1                 next_address
 80200fa8 80200fa8    140d4     4 .bss
 80200fa8 80200fa8        0     1         __bss = .
-80200fa8 80200fa8        8     4         /tmp/kernel-9db353.o:(.sbss)
+80200fa8 80200fa8        8     4         /tmp/kernel-6e7d03.o:(.sbss)
 80200fa8 80200fa8        0     1                 $d.3
 80200fa8 80200fa8        4     1                 proc_a
 80200fac 80200fac        4     1                 proc_b
-80200fb0 80200fb0    140c8     4         /tmp/functions-f12527.o:(.bss)
+80200fb0 80200fb0    140c8     4         /tmp/functions-31ae41.o:(.bss)
 80200fb0 80200fb0        0     1                 $d.4
 80200fb0 80200fb0    140c8     1                 procs
-80215078 80215078        4     4         /tmp/functions-f12527.o:(.sbss)
+80215078 80215078        4     4         /tmp/functions-31ae41.o:(.sbss)
 80215078 80215078        0     1                 $d.5
 80215078 80215078        4     1                 current_process
 8021507c 8021507c        0     1         __bss_end = .
@@ -583,20 +583,20 @@
 80236000 80236000  4000000     1 . += 64 * 1024 * 1024
 84236000 84236000        0     1 __free_mem_end = .
        0        0      432     1 .debug_abbrev
-       0        0      116     1         /tmp/kernel-9db353.o:(.debug_abbrev)
+       0        0      116     1         /tmp/kernel-6e7d03.o:(.debug_abbrev)
        0        0        0     1                 $d.4
-     116      116      31c     1         /tmp/functions-f12527.o:(.debug_abbrev)
+     116      116      31c     1         /tmp/functions-31ae41.o:(.debug_abbrev)
      116      116        0     1                 $d.7
        0        0     11fe     1 .debug_info
-       0        0      212     1         /tmp/kernel-9db353.o:(.debug_info)
+       0        0      212     1         /tmp/kernel-6e7d03.o:(.debug_info)
        0        0        0     1                 $d.5
-     212      212      fec     1         /tmp/functions-f12527.o:(.debug_info)
+     212      212      fec     1         /tmp/functions-31ae41.o:(.debug_info)
      212      212        0     1                 $d.8
        0        0       c0     1 .debug_ranges
-       0        0       18     1         /tmp/kernel-9db353.o:(.debug_ranges)
+       0        0       18     1         /tmp/kernel-6e7d03.o:(.debug_ranges)
        0        0        0     1                 
        0        0        0     1                 $d.6
-      18       18       a8     1         /tmp/functions-f12527.o:(.debug_ranges)
+      18       18       a8     1         /tmp/functions-31ae41.o:(.debug_ranges)
       18       18        0     1                 
       18       18        0     1                 $d.9
       60       60        0     1                 
@@ -608,21 +608,21 @@
        0        0       2b     1 .riscv.attributes
        0        0       2b     1         <internal>:(.riscv.attributes)
        0        0      1a8     4 .debug_frame
-       0        0       70     4         /tmp/kernel-9db353.o:(.debug_frame)
+       0        0       70     4         /tmp/kernel-6e7d03.o:(.debug_frame)
        0        0        0     1                 
        0        0        0     1                 $d.10
-      70       70      138     4         /tmp/functions-f12527.o:(.debug_frame)
+      70       70      138     4         /tmp/functions-31ae41.o:(.debug_frame)
       70       70        0     1                 
       70       70        0     1                 $d.13
        0        0      8a9     1 .debug_line
-       0        0       f5     1         /tmp/kernel-9db353.o:(.debug_line)
+       0        0       f5     1         /tmp/kernel-6e7d03.o:(.debug_line)
        0        0        0     1                 .Lline_table_start0
        0        0        0     1                 $d.11
-      f5       f5      7b4     1         /tmp/functions-f12527.o:(.debug_line)
+      f5       f5      7b4     1         /tmp/functions-31ae41.o:(.debug_line)
       f5       f5        0     1                 .Lline_table_start0
       f5       f5        0     1                 $d.14
        0        0      840     1 .debug_loc
-       0        0      840     1         /tmp/functions-f12527.o:(.debug_loc)
+       0        0      840     1         /tmp/functions-31ae41.o:(.debug_loc)
        0        0        0     1                 
        0        0        0     1                 $d.6
       13       13        0     1                 
