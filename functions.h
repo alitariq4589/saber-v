@@ -18,4 +18,5 @@ struct process *create_process(unsigned long proc_entry_point);
 void yield();
 void start_processes(unsigned long *process_entry_point, struct process *process_structure);
 void map_page(unsigned long *root_page_addr, unsigned long virt_addr, unsigned long phy_addr, unsigned int flags);
+void *memcpy(void *to, void *from, unsigned long byteCount);
 // #endif

@@ -297,6 +297,23 @@ void memset(unsigned char *start_addr, unsigned char set_value, unsigned long nu
   }
 }
 
+/* Takes the source and destination, copies the number of bytes in byteCount to destination 
+and returns the pointer to the destination*/
+void *memcpy(void *to, void *from, unsigned long byteCount)
+{
+  char *to_slider = to;
+  char *from_slider = from;
+
+  for (unsigned long i = 0; i < byteCount; i++)
+  {
+    *from_slider = *to_slider;
+    from_slider++;
+    to_slider++;
+  }
+
+  return to;
+}
+
 __attribute__((naked))
 
 void
@@ -366,7 +383,7 @@ struct process *create_process(unsigned long proc_entry_point)
     PANIC("\nNo free process to allocate!\n");
 
   new_process->pid = i;
-  unsigned long a =0;
+  unsigned long a = 0;
   new_page_table = malloc_pages(1);
   // printf("\nDebug Statement\n");
   for (unsigned char i = (unsigned char)__kernel_base; i < (unsigned char)__free_mem_end; i += 4096)
@@ -395,7 +412,7 @@ struct process *create_process(unsigned long proc_entry_point)
   new_process->sp = sp;
   new_process->allocation = ASSIGNED;
   new_process->state = IDLE;
-  
+
   return new_process;
 }
 
