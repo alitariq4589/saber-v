@@ -1,25 +1,25 @@
 
 #include "functions.h"
 
-struct process *proc_a;
-struct process *proc_b;
+struct process *proc_app;
+// struct process *proc_b;
 
-
-
-
-void process_a_entry(){
+void process_a_entry()
+{
     printf("\nIn Process A\n");
-    __asm__ __volatile__("nop\n" "nop\n" "nop\n");
+    __asm__ __volatile__("nop\n"
+                         "nop\n"
+                         "nop\n");
     // switch_context(&proc_a->sp, &proc_b->sp);
     yield();
 }
-void process_b_entry(){
+void process_b_entry()
+{
     printf("\nIn Process B\n");
 
     // switch_context(&proc_b->sp, &proc_a->sp);
     yield();
 }
-
 
 /*Main function for the kernel which is called by boot function*/
 void kernel_main(void)
@@ -33,13 +33,11 @@ void kernel_main(void)
     // Write your code here!
 
     // Created processes
-    proc_a = create_process((unsigned long) process_a_entry);
-
-    proc_b = create_process((unsigned long) process_b_entry);
+    proc_app = create_process(_binary___process_user_bin_start, (unsigned long)_binary___process_user_bin_size);
 
 
-    start_processes(&process_a_entry,proc_a);
-
+    initialize_processes();
+    yield();
 
     // ============================================//
 

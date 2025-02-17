@@ -277,18 +277,18 @@ unsigned char *malloc(unsigned long number_of_bytes)
 /*Allocates the contiguous number of pages in memory and returns the starting address of the first page. The memory which is used for this is defined in the linker script as __free_mem and is 64MB. The function sets 0s in all the addresses in the memory which are to be allocated*/
 unsigned long *malloc_pages(unsigned long number_of_pages)
 {
-  unsigned char *starting_address = next_address;
+  unsigned long *starting_address = (unsigned long *)next_address;
 
   next_address += number_of_pages * PAGE_SIZE;
 
-  memset(starting_address, 0, number_of_pages * PAGE_SIZE);
+  memset((unsigned char *)starting_address, 0, number_of_pages * PAGE_SIZE);
   return starting_address;
 }
 
 /*Sets number of bytes from a starting address with the given value*/
 void memset(unsigned char *start_addr, unsigned char set_value, unsigned long number_of_bytes_to_set)
 {
-  unsigned char *slider = start_addr;
+  unsigned char *slider = (unsigned char *)start_addr;
 
   for (unsigned int i = 0; i < number_of_bytes_to_set; i++)
   {
@@ -297,22 +297,19 @@ void memset(unsigned char *start_addr, unsigned char set_value, unsigned long nu
   }
 }
 
-/* Takes the source and destination, copies the number of bytes in byteCount to destination 
-and returns the pointer to the destination*/
-void *memcpy(void *to, void *from, unsigned long byteCount)
+void *memcpy(void *dst, const void *src, unsigned long n)
 {
-  char *to_slider = to;
-  char *from_slider = from;
+  unsigned char *d = (unsigned char *)dst;
+  unsigned char *s = (unsigned char *)src;
 
-  for (unsigned long i = 0; i < byteCount; i++)
+  while (n--)
   {
-    *from_slider = *to_slider;
-    from_slider++;
-    to_slider++;
+    *d++ = *s++;
   }
-
-  return to;
+  return dst;
 }
+
+
 
 __attribute__((naked))
 
@@ -362,11 +359,15 @@ switch_context(unsigned long *prev_process_stack_pointer, unsigned long *next_pr
   );
 }
 
-struct process *create_process(unsigned long proc_entry_point)
+void user_entry(void)
 {
+  PANIC("not yet implemented");
+}
 
+struct process *create_process(const void *app_img, unsigned long img_size)
+{
+  unsigned long user_page_copy_size;
   unsigned long *new_page_table;
-  unsigned int new_page_entry_flags = 0xe0; // WRX flag bits of PTE
   struct process *new_process;
   int i;
 
@@ -383,53 +384,71 @@ struct process *create_process(unsigned long proc_entry_point)
     PANIC("\nNo free process to allocate!\n");
 
   new_process->pid = i;
-  unsigned long a = 0;
+
   new_page_table = malloc_pages(1);
   // printf("\nDebug Statement\n");
-  for (unsigned char i = (unsigned char)__kernel_base; i < (unsigned char)__free_mem_end; i += 4096)
+  for (unsigned long addr = (unsigned long)__kernel_base; addr < (unsigned long)__free_mem_end; addr += PAGE_SIZE)
   {
-    map_page(new_page_table, i, i, new_page_entry_flags);
+    map_page(new_page_table, addr, addr, PAGE_V | PAGE_R | PAGE_W | PAGE_X);
   }
 
   // Start the stack from the last index
   unsigned long *sp = (unsigned long *)&new_process->stack[PROCESS_STACK_SIZE];
 
   // Allocate memory for 13 registers using decrement
-  *--sp = 0;                // s11
-  *--sp = 0;                // s10
-  *--sp = 0;                // s9
-  *--sp = 0;                // s8
-  *--sp = 0;                // s7
-  *--sp = 0;                // s6
-  *--sp = 0;                // s5
-  *--sp = 0;                // s4
-  *--sp = 0;                // s3
-  *--sp = 0;                // s2
-  *--sp = 0;                // s1
-  *--sp = 0;                // s0
-  *--sp = proc_entry_point; // ra (program counter)
+  *--sp = 0;                         // s11
+  *--sp = 0;                         // s10
+  *--sp = 0;                         // s9
+  *--sp = 0;                         // s8
+  *--sp = 0;                         // s7
+  *--sp = 0;                         // s6
+  *--sp = 0;                         // s5
+  *--sp = 0;                         // s4
+  *--sp = 0;                         // s3
+  *--sp = 0;                         // s2
+  *--sp = 0;                         // s1
+  *--sp = 0;                         // s0
+  *--sp = (unsigned long)user_entry; // ra (program counter)
 
+  // Mapping user pages
+  for (unsigned long addr = 0; addr < img_size; addr += PAGE_SIZE)
+  {
+    unsigned long *physical_page = malloc_pages(1);
+
+    // This checks if the data being copied is smaller than the page size. If so then dont copy bytes of entire page
+    if (img_size - addr < PAGE_SIZE)
+      user_page_copy_size = img_size - addr;
+    else
+      user_page_copy_size = PAGE_SIZE;
+
+    /* Copy the user memory to the kernel space dynamic memory region for process to be executed. This is copied so that we dont end up using the same memory region of user image for multiple processes which can potentially overwrite the data of one process of same application with another process of same application */
+    memcpy(physical_page, app_img + addr, user_page_copy_size);
+
+    // Map the physical page to virtual page
+    map_page(new_page_table, (unsigned long) USER_BASE+addr, (unsigned long) physical_page, PAGE_V | PAGE_R | PAGE_W | PAGE_X | PAGE_U);
+  }
   new_process->sp = sp;
+  new_process->page_table = new_page_table;
   new_process->allocation = ASSIGNED;
   new_process->state = IDLE;
+  procs[i] = *new_process;
 
   return new_process;
 }
 
-void start_processes(unsigned long *process_entry_point, struct process *process_structure)
+void initialize_processes()
 {
-  process_structure->state = RUNNING;
-  current_process = process_structure;
-  unsigned long (*process_entry)();
-  process_entry = process_entry_point;
-  process_entry();
+  struct process *idle_process;
+  idle_process = create_process(0, 0);
+  idle_process->pid = -1;
+  current_process = idle_process;
 }
 
 void yield()
 {
   printf("\nInside yield function\n");
   struct process *prev_process;
-  struct process *next_process;
+  struct process *next_process = current_process; // This is so that if the loop exits and no process is free, the next process is going to be the current process in that case (until a better idea comes to mind)
   // next_process = current_process;
   for (int i = 0; i < MAX_PROCS; i++)
   {
@@ -438,37 +457,39 @@ void yield()
       next_process = &procs[i];
       break;
     }
-    if (i == MAX_PROCS)
-    {
-      printf("\nWrapping the pid!\n");
-      i = 0;
-    }
   }
-
   prev_process = current_process;
   current_process = next_process;
-  unsigned long satp_value = ((unsigned long)next_process->page_table) & 0x80000000;
+  unsigned long satp_value = (((unsigned long)next_process->page_table) >> 12) | 0x80000000;
 
   __asm__ __volatile__(
       "sfence.vma\n"
       "csrw satp, %[root_page_addr]\n"
-      "sfence.vma\n" ::[root_page_addr] "r"(satp_value));
+      "sfence.vma\n"
+      "csrw sscratch, %[sscratch]\n"
+      :
+      : [root_page_addr] "r"(satp_value), [sscratch] "r"(&next_process->stack[PROCESS_STACK_SIZE]));
 
-  switch_context(&prev_process->sp, &next_process->sp);
+
+  switch_context((unsigned long *)&prev_process->sp, (unsigned long *)&next_process->sp);
 }
 
+/* Maps the physical memory space to the virutal memory space. Essentially you give the physical address to map and also the virtual address to map to. One address represents a whole page since the next address will be page aligned so it is not needed to map every address lying in single page size memory range, just the start address of the page*/
 void map_page(unsigned long *root_page_addr, unsigned long virt_addr, unsigned long phy_addr, unsigned int flags)
 {
 
   unsigned long vpn1 = (virt_addr >> 22) & 0x3ff;
   unsigned long vpn0 = (virt_addr >> 12) & 0x3ff;
 
-  unsigned long *second_page_addr;
-
-  if (root_page_addr[vpn1] & 0x1 != 1)
+  unsigned long *second_page_addr; // This is the page which will be created if there is no second page already and the page 1 entry is invalid
+  if ((root_page_addr[vpn1] & 0x1) != 1)
   {
+    
     second_page_addr = malloc_pages(1);                            // Allocate a page in the memory and get its starting address
-    root_page_addr[vpn1] = ((unsigned int)second_page_addr) | 0x1; // Setting the valid bit and adding the address of second table
+    root_page_addr[vpn1] = (((unsigned long)second_page_addr >> 12) << 10) | PAGE_V; // Setting the valid bit and adding the address of second table
   }
-  second_page_addr[vpn0] = phy_addr | flags | 0x1;
+
+  // When code reaches this point, a second page exists, so we get the address of it from the pte of page 1 and then store the physical address along with flags in it
+  unsigned int *second_table = (unsigned int *) (((root_page_addr[vpn1])>>10) << 12);
+  second_table[vpn0] = ((phy_addr >> 12) << 10) | flags | PAGE_V;
 }

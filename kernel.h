@@ -1,5 +1,6 @@
-#ifndef KERNEL_H
-#define KERNEL_H
+
+
+#define USER_BASE 0x10000000
 
 #define va_list __builtin_va_list
 #define va_arg __builtin_va_arg
@@ -13,6 +14,11 @@
 #define IDLE                0
 #define PROCESS_STACK_SIZE  8192
 #define PAGE_SIZE           4096
+#define PAGE_V          0x01
+#define PAGE_R          0x02
+#define PAGE_W          0x04
+#define PAGE_X          0x08
+#define PAGE_U          0x10
 
 #define PANIC(fmt, ...)                                                                    \
     do                                                                                     \
@@ -29,7 +35,7 @@
 #define READ_REGISTER(reg) ({ unsigned int reg_val; __asm__ __volatile__ ("add %0," #reg ",x0" : "=r"(reg_val) ); reg_val; })
 #define WRITE_REGISTER(reg, value) ({ __asm__ __volatile__("li " #reg "," #value); })
 
-extern char __bss[], __bss_end[], __stack_top[], __free_mem[], __free_mem_end[], __kernel_base[];
+extern char __bss[], __bss_end[], __stack_top[], __free_mem[], __free_mem_end[], __kernel_base[], _binary___process_user_bin_end[], _binary___process_user_bin_size[], _binary___process_user_bin_start[];
 
 // This is unused yet
 struct trap_frame
@@ -83,4 +89,4 @@ struct process
     unsigned char stack[PROCESS_STACK_SIZE];
 };
 
-#endif
+

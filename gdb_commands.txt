@@ -1,6 +1,6 @@
 target remote localhost:1234
-break kernel.c:36
-break functions.c:368
+
+break functions.c:495
 
 
 tui enable

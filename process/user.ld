@@ -2,7 +2,7 @@ ENTRY(start)
 
 SECTIONS {
     . = 0x10000000;
-    user_base = .;
+    __user_base = .;
     
     .text :{
         KEEP(*(.text.boot));
@@ -21,12 +21,11 @@ SECTIONS {
         __bss = .;
         *(.bss .bss.* .sbss .sbss.*);
         __bss_end = .;
+        ASSERT(. < 0x1FFE0000, "too large executable");
     }
-
+    
     . = ALIGN(4);
     . += 128 * 1024; /* 128KB */
     __stack_top = .;
-
-    ASSERT(. < 0x2000000, "too large executable");
-
 }
+
