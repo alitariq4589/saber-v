@@ -309,8 +309,6 @@ void *memcpy(void *dst, const void *src, unsigned long n)
   return dst;
 }
 
-
-
 __attribute__((naked))
 
 void
@@ -361,11 +359,19 @@ switch_context(unsigned long *prev_process_stack_pointer, unsigned long *next_pr
 
 void user_entry(void)
 {
-  PANIC("not yet implemented");
+  unsigned char spp = (unsigned char)0x100;
+  unsigned long user_base = USER_BASE;
+  __asm__ __volatile__(
+      "csrc sstatus, %[SPP]\n"
+      "csrw sepc, %[USERBASE]\n"
+      "sret"
+      :
+      : [SPP] "r"(spp), [USERBASE] "r"(user_base));
 }
 
 struct process *create_process(const void *app_img, unsigned long img_size)
 {
+  printf("Size of the user binary: %d\n", img_size);
   unsigned long user_page_copy_size;
   unsigned long *new_page_table;
   struct process *new_process;
@@ -425,7 +431,7 @@ struct process *create_process(const void *app_img, unsigned long img_size)
     memcpy(physical_page, app_img + addr, user_page_copy_size);
 
     // Map the physical page to virtual page
-    map_page(new_page_table, (unsigned long) USER_BASE+addr, (unsigned long) physical_page, PAGE_V | PAGE_R | PAGE_W | PAGE_X | PAGE_U);
+    map_page(new_page_table, (unsigned long)USER_BASE + addr, (unsigned long)physical_page, PAGE_V | PAGE_R | PAGE_W | PAGE_X | PAGE_U);
   }
   new_process->sp = sp;
   new_process->page_table = new_page_table;
@@ -470,7 +476,6 @@ void yield()
       :
       : [root_page_addr] "r"(satp_value), [sscratch] "r"(&next_process->stack[PROCESS_STACK_SIZE]));
 
-
   switch_context((unsigned long *)&prev_process->sp, (unsigned long *)&next_process->sp);
 }
 
@@ -484,12 +489,17 @@ void map_page(unsigned long *root_page_addr, unsigned long virt_addr, unsigned l
   unsigned long *second_page_addr; // This is the page which will be created if there is no second page already and the page 1 entry is invalid
   if ((root_page_addr[vpn1] & 0x1) != 1)
   {
-    
-    second_page_addr = malloc_pages(1);                            // Allocate a page in the memory and get its starting address
+
+    second_page_addr = malloc_pages(1);                                              // Allocate a page in the memory and get its starting address
     root_page_addr[vpn1] = (((unsigned long)second_page_addr >> 12) << 10) | PAGE_V; // Setting the valid bit and adding the address of second table
   }
 
   // When code reaches this point, a second page exists, so we get the address of it from the pte of page 1 and then store the physical address along with flags in it
-  unsigned int *second_table = (unsigned int *) (((root_page_addr[vpn1])>>10) << 12);
+  unsigned int *second_table = (unsigned int *)(((root_page_addr[vpn1]) >> 10) << 12);
   second_table[vpn0] = ((phy_addr >> 12) << 10) | flags | PAGE_V;
+  if (DEBUG)
+  {
+    printf("Virtual Address: %x\n", virt_addr);
+    printf("Physical Address: %x\n", phy_addr);
+  }
 }

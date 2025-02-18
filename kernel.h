@@ -1,4 +1,4 @@
-
+#define DEBUG 0
 
 #define USER_BASE 0x10000000
 

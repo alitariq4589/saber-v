@@ -5,7 +5,7 @@ SECTIONS {
     __user_base = .;
     
     .text :{
-        KEEP(*(.text.boot));
+        KEEP(*(.text.start));
         *(.text .text.*);
     }
 
@@ -20,12 +20,13 @@ SECTIONS {
     .bss : ALIGN(4) {
         __bss = .;
         *(.bss .bss.* .sbss .sbss.*);
-        __bss_end = .;
+        /* __bss_end = .; */
+        
+        . = ALIGN(16);
+        . += 128 * 1024; /* 128KB */
+        __stack_top = .;
         ASSERT(. < 0x1FFE0000, "too large executable");
     }
-    
-    . = ALIGN(4);
-    . += 128 * 1024; /* 128KB */
-    __stack_top = .;
+
 }
 
