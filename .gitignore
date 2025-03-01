@@ -1,0 +1,6 @@
+*/*.elf
+*/*.obj
+*/*.map
+*/*.log
+*/*.bin
+*/*.bin.o

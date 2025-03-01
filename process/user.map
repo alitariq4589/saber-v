@@ -1,82 +1,100 @@
      VMA      LMA     Size Align Out     In      Symbol
        0        0 10000000     1 . = 0x10000000
 10000000        0        0     1 __user_base = .
-10000000 10000000       36     2 .text
-10000000 10000000        e     2         /tmp/user-b84be8.o:(.text.start)
-10000000 10000000        0     1                 
-10000000 10000000        0     1                 
-10000000 10000000        0     1                 $x.1
-10000000 10000000        0     1                 
+10000000 10000000       2e     2 .text
+10000000 10000000        e     2         /tmp/user-00fd7d.o:(.text.start)
+10000000 10000000        0     1                 .L0 
+10000000 10000000        0     1                 .L0 
+10000000 10000000        0     1                 $x
+10000000 10000000        0     1                 .L0 
 10000000 10000000        e     1                 start
-1000000e 1000000e        0     1                 
-1000000e 1000000e        0     1                 
-1000000e 1000000e       10     2         /tmp/user-b84be8.o:(.text)
-1000000e 1000000e        0     1                 
-1000000e 1000000e        0     1                 
-1000000e 1000000e        0     1                 $x.0
-1000000e 1000000e        0     1                 
-1000000e 1000000e       10     1                 exit
-10000016 10000016        0     1                 
-1000001a 1000001a        0     1                 .LBB0_1
-1000001a 1000001a        0     1                 
-1000001e 1000001e        0     1                 
-1000001e 1000001e       18     2         /tmp/app-99d328.o:(.text)
-1000001e 1000001e        0     1                 
-1000001e 1000001e        0     1                 
-1000001e 1000001e        0     1                 $x.0
-1000001e 1000001e        0     1                 
-1000001e 1000001e       18     1                 main
-10000026 10000026        0     1                 
-1000002a 1000002a        0     1                 .LBB0_1
-1000002a 1000002a        0     1                 
-1000002c 1000002c        0     1                 
-1000002e 1000002e        0     1                 
-10000030 10000030        0     1                 
-10000032 10000032        0     1                 
-10000036 10000036        0     1                 
-10000038 10000038    20008     4 .bss
-10000038 10000038        0     1         __bss = .
-10000038 10000038        8     1         . = ALIGN ( 16 )
-10000040 10000040    20000     1         . += 128 * 1024
-10020040 10020040        0     1         __stack_top = .
-10020040 10020040        0     1         
-       0        0       6a     1 .debug_abbrev
-       0        0       41     1         /tmp/user-b84be8.o:(.debug_abbrev)
-       0        0        0     1                 $d.2
-      41       41       29     1         /tmp/app-99d328.o:(.debug_abbrev)
-      41       41        0     1                 $d.1
-       0        0       81     1 .debug_info
-       0        0       49     1         /tmp/user-b84be8.o:(.debug_info)
-       0        0        0     1                 $d.3
-      49       49       38     1         /tmp/app-99d328.o:(.debug_info)
-      49       49        0     1                 $d.2
-       0        0       18     1 .debug_ranges
-       0        0       18     1         /tmp/user-b84be8.o:(.debug_ranges)
-       0        0        0     1                 
-       0        0        0     1                 $d.4
+1000000e 1000000e        0     1                 .L0 
+1000000e 1000000e        0     1                 .L0 
+1000000e 1000000e        c     2         /tmp/user-00fd7d.o:(.text)
+1000000e 1000000e        0     1                 .L0 
+1000000e 1000000e        0     1                 .L0 
+1000000e 1000000e        0     1                 $x
+1000000e 1000000e        0     1                 .L0 
+1000000e 1000000e        c     1                 exit
+10000016 10000016        0     1                 .L0 
+10000018 10000018        0     1                 .L0 
+10000018 10000018        0     1                 .L0 
+1000001a 1000001a        0     1                 .L0 
+1000001a 1000001a        0     1                 .L0 
+1000001a 1000001a       14     2         /tmp/app-7aed31.o:(.text)
+1000001a 1000001a        0     1                 .L0 
+1000001a 1000001a        0     1                 .L0 
+1000001a 1000001a        0     1                 $x
+1000001a 1000001a        0     1                 .L0 
+1000001a 1000001a       14     1                 main
+10000022 10000022        0     1                 .L0 
+10000024 10000024        0     1                 .L0 
+10000024 10000024        0     1                 .L0 
+10000026 10000026        0     1                 .L0 
+10000028 10000028        0     1                 .L0 
+1000002a 1000002a        0     1                 .L0 
+1000002c 1000002c        0     1                 .L0 
+1000002e 1000002e        0     1                 .L0 
+1000002e 1000002e        0     1                 .L0 
+10000030 10000030    20000     4 .bss
+10000030 10000030        0     1         __bss = .
+10000030 10000030        0     1         . = ALIGN ( 16 )
+10000030 10000030    20000     1         . += 128 * 1024
+10020030 10020030        0     1         __stack_top = .
+10020030 10020030        0     1         
+       0        0       74     1 .debug_abbrev
+       0        0       47     1         /tmp/user-00fd7d.o:(.debug_abbrev)
+       0        0        0     1                 $d
+      47       47       2d     1         /tmp/app-7aed31.o:(.debug_abbrev)
+      47       47        0     1                 $d
+       0        0       6d     1 .debug_info
+       0        0       3e     1         /tmp/user-00fd7d.o:(.debug_info)
+       0        0        0     1                 $d
+      3e       3e       2f     1         /tmp/app-7aed31.o:(.debug_info)
+      3e       3e        0     1                 $d
+       0        0       17     1 .debug_rnglists
+       0        0       17     1         /tmp/user-00fd7d.o:(.debug_rnglists)
+       0        0        0     1                 $d
+       c        c        0     1                 .L0 
+       0        0       34     1 .debug_str_offsets
+       0        0       1c     1         /tmp/user-00fd7d.o:(.debug_str_offsets)
+       0        0        0     1                 $d
+       8        8        0     1                 .L0 
+      1c       1c       18     1         /tmp/app-7aed31.o:(.debug_str_offsets)
+      1c       1c        0     1                 $d
+      24       24        0     1                 .L0 
        0        0       b3     1 .debug_str
        0        0       b3     1         <internal>:(.debug_str)
-       0        0       7d     1 .comment
-       0        0       7d     1         <internal>:(.comment)
-       0        0       2b     1 .riscv.attributes
-       0        0       2b     1         <internal>:(.riscv.attributes)
+       0        0       1c     1 .debug_addr
+       0        0       10     1         /tmp/user-00fd7d.o:(.debug_addr)
+       0        0        0     1                 $d
+       8        8        0     1                 .L0 
+      10       10        c     1         /tmp/app-7aed31.o:(.debug_addr)
+      10       10        0     1                 $d
+      18       18        0     1                 .L0 
+       0        0       d1     1 .comment
+       0        0       d1     1         <internal>:(.comment)
+       0        0       34     1 .riscv.attributes
+       0        0       34     1         <internal>:(.riscv.attributes)
        0        0       70     4 .debug_frame
-       0        0       40     4         /tmp/user-b84be8.o:(.debug_frame)
-       0        0        0     1                 
-       0        0        0     1                 $d.8
-      40       40       30     4         /tmp/app-99d328.o:(.debug_frame)
-      40       40        0     1                 
-      40       40        0     1                 $d.6
-       0        0       cd     1 .debug_line
-       0        0       63     1         /tmp/user-b84be8.o:(.debug_line)
+       0        0       40     4         /tmp/user-00fd7d.o:(.debug_frame)
+       0        0        0     1                 .L0 
+       0        0        0     1                 $d
+      40       40       30     4         /tmp/app-7aed31.o:(.debug_frame)
+      40       40        0     1                 .L0 
+      40       40        0     1                 $d
+       0        0      122     1 .debug_line
+       0        0       8d     1         /tmp/user-00fd7d.o:(.debug_line)
        0        0        0     1                 .Lline_table_start0
-       0        0        0     1                 $d.9
-      63       63       6a     1         /tmp/app-99d328.o:(.debug_line)
-      63       63        0     1                 .Lline_table_start0
-      63       63        0     1                 $d.7
-       0        0      3c0     4 .symtab
-       0        0      3c0     4         <internal>:(.symtab)
-       0        0       8d     1 .shstrtab
-       0        0       8d     1         <internal>:(.shstrtab)
-       0        0       96     1 .strtab
-       0        0       96     1         <internal>:(.strtab)
+       0        0        0     1                 $d
+      8d       8d       95     1         /tmp/app-7aed31.o:(.debug_line)
+      8d       8d        0     1                 .Lline_table_start0
+      8d       8d        0     1                 $d
+       0        0       51     1 .debug_line_str
+       0        0       51     1         <internal>:(.debug_line_str)
+       0        0      210     4 .symtab
+       0        0      210     4         <internal>:(.symtab)
+       0        0       be     1 .shstrtab
+       0        0       be     1         <internal>:(.shstrtab)
+       0        0       84     1 .strtab
+       0        0       84     1         <internal>:(.strtab)
