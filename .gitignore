@@ -1,6 +1,6 @@
-*/*.elf
-*/*.obj
-*/*.map
-*/*.log
-*/*.bin
-*/*.bin.o
+*.elf
+*.obj
+*.map
+*.log
+*.bin
+*.bin.o
