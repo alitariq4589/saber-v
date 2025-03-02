@@ -1,9 +1,12 @@
-#include "functions.h"
+#include "common.h"
+#include "kernel_functions.h"
 
 struct process *current_process;
 struct process procs[MAX_PROCS];
 
 const char *exception_cause[] = {
+
+    // Exceptions
     "Instruction address misaligned",
     "Instruction access fault",
     "Illegal instruction",
@@ -12,7 +15,6 @@ const char *exception_cause[] = {
     "Load access fault",
     "Store/AMO address misaligned",
     "Store/AMO access fault",
-    "Instruction page fault",
     "Environment call from U-mode",
     "Environment call from S-mode",
     "Reserved",
@@ -25,6 +27,7 @@ const char *exception_cause[] = {
     "Software check",
     "Hardware error",
 
+    // Interrupts
     "Reserved",
     "Supervisor software interrupt",
     "Reserved",
@@ -67,79 +70,6 @@ void putchar(char ch)
   sbi_call(ch, 0, 0, 0, 0, 0, 0, 1 /* Console Putchar */);
 }
 
-/*Uses the putchar function to mimic conventional printf() function*/
-void printf(char *fmt, ...)
-{
-
-  va_list args;
-  va_start(args, fmt);
-
-  char *str;
-
-  unsigned long number_to_print;
-
-  while (*fmt)
-  {
-    if (*fmt == '%')
-    {
-
-      fmt++;
-
-      // The string print
-      if (*fmt == 's')
-      {
-        str = va_arg(args, char *);
-        while (*str)
-        {
-          putchar(*str);
-          str++;
-        }
-      }
-
-      // The integer print
-      if (*fmt == 'd')
-      {
-        // fmt++;
-        unsigned long number = va_arg(args, unsigned long);
-        unsigned long rev_number = 0;
-        while (number > 9)
-        {
-          rev_number = (rev_number * 10) + (number % 10);
-          number /= 10;
-        }
-
-        rev_number = (rev_number * 10) + number;
-        while (rev_number > 9)
-        {
-          number_to_print = rev_number % 10;
-          putchar('0' + number_to_print);
-          rev_number /= 10;
-        }
-        putchar('0' + rev_number);
-      }
-
-      // Hexadecimal print
-      if (*fmt == 'x')
-      {
-        putchar('0');
-        putchar('x');
-        unsigned long number = va_arg(args, unsigned long);
-        for (int i = 7; i >= 0; i--)
-        {
-          unsigned long hex_digit = (number >> (i * 4)) & 0xf;
-          putchar("0123456789abcdefgh"[hex_digit]);
-        }
-      }
-    }
-    else
-    {
-
-      putchar(*fmt);
-    }
-    fmt++;
-  }
-}
-
 /*Title at the QEMU screen - Mimics the splash screen of bios*/
 void print_title(void)
 {
@@ -164,8 +94,20 @@ void initialize_stvec()
   WRITE_CSR(stvec, (unsigned int)kernel_entry);
 }
 
+void handle_syscall(struct trap_frame *f)
+{
+  switch (f->a3)
+  {
+  case SYS_PUTCHAR:
+    putchar(f->a0);
+    break;
+  default:
+    PANIC("Unexpected syscall! Syscall number stored in a3=%d\n", f->a3);
+  }
+}
+
 /*Function which is called in trap handler - Prints the values of registers for information of exception*/
-void handle_trap()
+void handle_trap(struct trap_frame *f)
 {
   unsigned long scause = READ_CSR(scause);
   unsigned long stval = READ_CSR(stval);
@@ -173,11 +115,23 @@ void handle_trap()
 
   unsigned long exception_type_index = (scause & 0x1f) + ((0x80000000 & scause) * 20);
 
-  printf("\n\n      === Exception Encountered ===    \n\n");
-  printf("\nException Type: %s!\n", exception_cause[exception_type_index]);
-  PANIC("Unexpected trap scause=%x, stval=%x, sepc=%x\n", scause, stval, user_pc);
-  // printf("Unexpected trap scause=%x, stval=%x, sepc=%x\n", scause, stval, user_pc);
-  // __asm__ __volatile__("ebreak\n");
+  if (exception_type_index == 0x08)
+  {
+
+    handle_syscall(f);
+    user_pc = user_pc + 4;
+    __asm__ __volatile__ (
+      "csrw sepc, %[user1_pc]"
+      :
+      :[user1_pc]"r"(user_pc)
+    );
+  }
+  else
+  {
+    printf("\n\n      === Exception Encountered ===    \n\n");
+    printf("\nException Type: %s!\n", exception_cause[exception_type_index]);
+    PANIC("Unexpected trap scause=%x, stval=%x, sepc=%x\n", scause, stval, user_pc);
+  }
 }
 
 /*This is the trap handler*/
@@ -186,7 +140,7 @@ __attribute__((aligned(4))) void
 kernel_entry(void)
 {
   __asm__ __volatile__(
-      "csrw sscratch, sp\n"
+      "csrrw sp, sscratch, sp\n"
       "addi sp, sp, -4 * 31\n"
       "sw ra,  4 * 0(sp)\n"
       "sw gp,  4 * 1(sp)\n"
@@ -221,6 +175,10 @@ kernel_entry(void)
 
       "csrr a0, sscratch\n"
       "sw a0, 4 * 30(sp)\n"
+
+      // Reset the kernel stack.
+      "addi a0, sp, 4 * 31\n"
+      "csrw sscratch, a0\n"
 
       "mv a0, sp\n"
       "call handle_trap\n"
@@ -371,7 +329,8 @@ void user_entry(void)
 
 struct process *create_process(const void *app_img, unsigned long img_size)
 {
-  printf("Size of the user binary: %d\n", img_size);
+  printf("Size of the user binary: %d bytes\n", img_size);
+  printf("Starting address of the user binary: %x\n", app_img);
   unsigned long user_page_copy_size;
   unsigned long *new_page_table;
   struct process *new_process;
@@ -432,6 +391,8 @@ struct process *create_process(const void *app_img, unsigned long img_size)
 
     // Map the physical page to virtual page
     map_page(new_page_table, (unsigned long)USER_BASE + addr, (unsigned long)physical_page, PAGE_V | PAGE_R | PAGE_W | PAGE_X | PAGE_U);
+    // printf("User Binary Physical Address: %x\t Physical Page copied address: %x\t Virtual Mapped Address: %x\n", (app_img+addr), physical_page, new_page_table);
+    printf("User Binary Physical Address (copied): %x\t Virtual Mapped address: %x\n", physical_page,(USER_BASE + addr));
   }
   new_process->sp = sp;
   new_process->page_table = new_page_table;

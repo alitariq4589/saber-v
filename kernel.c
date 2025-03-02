@@ -1,5 +1,6 @@
+#include "common.h"
+#include "kernel_functions.h"
 
-#include "functions.h"
 
 struct process *proc_app;
 // struct process *proc_b;

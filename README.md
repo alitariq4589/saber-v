@@ -120,9 +120,11 @@ riscv32-unknown-linux-gnu-gdb ./kernel.elf -x ./gdb_commands.txt
 
 ## Future Objectives
 
+- [ ] Retire the process properly by freeing the held pages in memory and the memory allocated by the exited process
 - [ ] Add essential linux bianaries (e.g. gcc compiler, sh, bash) in the disk space
 - [ ] Add mutithreading support
 - [ ] Add support for running this kernel on RISC-V SBCs (such as VisionFive 1&2, HiFive Unleashed etc.)
+
 
 ### Long-term objective
 

@@ -1,5 +1,24 @@
+#include "user.h"
 
 extern char __stack_top[];
+
+void syscall(unsigned long arg1, unsigned long arg2, unsigned long arg3, unsigned long sysno ){
+  register int a0 __asm__("a0") = arg1;
+  register int a1 __asm__("a1") = arg2;
+  register int a2 __asm__("a2") = arg3;
+  register int a3 __asm__("a3") = sysno;
+
+  __asm__ __volatile__(
+    "ecall\n"
+    :"=r"(a0)
+    :"r"(a0),"r"(a1),"r"(a2),"r"(a3)
+    :"memory"
+  );
+}
+
+void putchar(char ch){
+  syscall(ch,0,0,SYS_PUTCHAR);
+}
 
 
 __attribute__((noreturn))
