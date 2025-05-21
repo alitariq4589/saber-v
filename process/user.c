@@ -2,6 +2,7 @@
 
 extern char __stack_top[];
 
+/*This is system call function. First three arguments are passed to registers a0 to a2 and are implementation dependant based on the system call type. The sysno indicates the system call number and decides the type of system call*/
 void syscall(unsigned long arg1, unsigned long arg2, unsigned long arg3, unsigned long sysno ){
   register int a0 __asm__("a0") = arg1;
   register int a1 __asm__("a1") = arg2;
@@ -23,6 +24,7 @@ void putchar(char ch){
 
 __attribute__((noreturn))
 void exit(void){
+  syscall(0,0,0,SYS_EXIT);
   for (;;);
 }
 

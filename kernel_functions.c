@@ -101,6 +101,11 @@ void handle_syscall(struct trap_frame *f)
   case SYS_PUTCHAR:
     putchar(f->a0);
     break;
+  case SYS_EXIT:
+    printf("process %d exited\n", current_process->pid);
+    current_process->state = RETIRED;
+    yield();
+    printf("\nNo process assigned!\n");
   default:
     PANIC("Unexpected syscall! Syscall number stored in a3=%d\n", f->a3);
   }
@@ -120,11 +125,10 @@ void handle_trap(struct trap_frame *f)
 
     handle_syscall(f);
     user_pc = user_pc + 4;
-    __asm__ __volatile__ (
-      "csrw sepc, %[user1_pc]"
-      :
-      :[user1_pc]"r"(user_pc)
-    );
+    __asm__ __volatile__(
+        "csrw sepc, %[user1_pc]"
+        :
+        : [user1_pc] "r"(user_pc));
   }
   else
   {
@@ -392,7 +396,7 @@ struct process *create_process(const void *app_img, unsigned long img_size)
     // Map the physical page to virtual page
     map_page(new_page_table, (unsigned long)USER_BASE + addr, (unsigned long)physical_page, PAGE_V | PAGE_R | PAGE_W | PAGE_X | PAGE_U);
     // printf("User Binary Physical Address: %x\t Physical Page copied address: %x\t Virtual Mapped Address: %x\n", (app_img+addr), physical_page, new_page_table);
-    printf("User Binary Physical Address (copied): %x\t Virtual Mapped address: %x\n", physical_page,(USER_BASE + addr));
+    printf("User Binary Physical Address (copied): %x\t Virtual Mapped address: %x\n", physical_page, (USER_BASE + addr));
   }
   new_process->sp = sp;
   new_process->page_table = new_page_table;
@@ -419,7 +423,7 @@ void yield()
   // next_process = current_process;
   for (int i = 0; i < MAX_PROCS; i++)
   {
-    if (procs[i].allocation == ASSIGNED && i != current_process->pid)
+    if (procs[i].allocation == ASSIGNED && i != current_process->pid && procs[i].state == IDLE)
     {
       next_process = &procs[i];
       break;
@@ -462,5 +466,27 @@ void map_page(unsigned long *root_page_addr, unsigned long virt_addr, unsigned l
   {
     printf("Virtual Address: %x\n", virt_addr);
     printf("Physical Address: %x\n", phy_addr);
+  }
+}
+
+long get_console_character()
+{
+  struct sbiret ret;
+  ret = sbi_call(0, 0, 0, 0, 0, 0, 0, 2);
+  return ret.error;
+}
+
+long getchar()
+{
+  while (1)
+  {
+    
+    long ch = get_console_character();
+    if (ch >= 0)
+    {
+
+      return ch;
+      // break;
+    }
   }
 }

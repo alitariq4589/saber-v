@@ -7,13 +7,17 @@
 #define va_start __builtin_va_start
 #define va_end __builtin_va_end
 
+// Process-related macros
 #define MAX_PROCS           10
 #define UNASSIGNED          0
 #define ASSIGNED            1
-#define RUNNING             1
 #define IDLE                0
+#define RUNNING             1
+#define RETIRED             2
 #define PROCESS_STACK_SIZE  8192
 #define PAGE_SIZE           4096
+
+// VM Related macros
 #define PAGE_V          0x01
 #define PAGE_R          0x02
 #define PAGE_W          0x04

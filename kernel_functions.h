@@ -15,3 +15,5 @@ void initialize_processes();
 // void map_page(unsigned long *root_page_addr, unsigned long virt_addr, unsigned long phy_addr, unsigned int flags);
 void map_page(unsigned long *root_page_addr, unsigned long virt_addr, unsigned long phy_addr, unsigned int flags);
 void *memcpy_custom(void *dst, const void *src, unsigned long n);
+long get_console_character();
+long getchar();

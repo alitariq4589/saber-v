@@ -1,7 +1,6 @@
 #include "common.h"
 #include "kernel_functions.h"
 
-
 struct process *proc_app;
 // struct process *proc_b;
 
@@ -36,12 +35,49 @@ void kernel_main(void)
     // Created processes
     proc_app = create_process(_binary___process_user_bin_start, (unsigned long)_binary___process_user_bin_size);
 
-
     initialize_processes();
     yield();
 
     // ============================================//
-
+    while (1)
+    {
+    prompt:
+        printf("--> ");
+        char cmdline[256];
+        for (int i = 0;; i++)
+        {
+            char ch = (char)getchar();
+            putchar(ch);
+            // printf("Out of the getchar\n");
+            if (i > 255 )
+            {
+                printf("\nToo long command!\n");
+                goto prompt;
+            }
+            else if (ch == 0x7f)
+            {
+                i--;
+                // printf("Value of i = %d",i);
+                if (i > 0)
+                {
+                    printf("\b \b");
+                    i--;
+                }
+                // else break;
+            }
+            else if (ch == '\r')
+            {
+                printf("\nNewline\n");
+                printf("\n");
+                cmdline[i] = '\0';
+                break;
+            }
+            else
+            {
+                cmdline[i] = ch;
+            }
+        }
+    }
     PANIC("Code Completed!!!");
 
     for (;;)
