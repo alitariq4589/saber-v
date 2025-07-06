@@ -1,3 +1,5 @@
+![banner.png](assets/banner.png)
+
 # saber-v
 
 A very minimal lightweight RISC-V OS which can be used for validating and testing the functionality of RISC-V privileged specification, such as physical memory protection, virtual memory (Sv32 for now). This is already tested on QEMU and can be used on RISC-V boards too (considering there is a working u-boot already implemented).
