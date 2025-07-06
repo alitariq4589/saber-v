@@ -1,6 +1,10 @@
 # saber-v
 
-A very minimal lightweight RISC-V OS.
+A very minimal lightweight RISC-V OS which can be used for validating and testing the functionality of RISC-V privileged specification, such as physical memory protection, virtual memory (Sv32 for now). This is already tested on QEMU and can be used on RISC-V boards too (considering there is a working u-boot already implemented).
+
+## Important Notes
+
+Some RISC-V boards require the opensbi to execute before the u-boot (such as Banana Pi F3). For those boards, it is better to refer to their datasheets/reference manaul/User Guides.
 
 Following are the details of each file.
 
